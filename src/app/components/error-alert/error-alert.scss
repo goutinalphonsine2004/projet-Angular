@@ -1,0 +1,307 @@
+.error-alert {
+  margin-bottom: 1rem;
+
+  .alert {
+    border: none;
+    border-radius: 15px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+
+    // Bordure gauche colorée
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: currentColor;
+      opacity: 0.3;
+    }
+
+    // Icône de l'alerte
+    .alert-icon {
+      flex-shrink: 0;
+      margin-top: 0.125rem;
+
+      i {
+        font-size: 1.25rem;
+      }
+    }
+
+    // Contenu principal
+    .alert-content {
+      flex: 1;
+      min-width: 0;
+
+      .alert-heading {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: inherit;
+      }
+
+      .alert-message {
+        margin-bottom: 0.75rem;
+        line-height: 1.5;
+        color: inherit;
+      }
+
+      .alert-details {
+        margin-bottom: 0.75rem;
+        
+        small {
+          font-size: 0.875rem;
+          line-height: 1.4;
+        }
+      }
+
+      .alert-actions {
+        .btn {
+          border-radius: 20px;
+          font-size: 0.875rem;
+          font-weight: 500;
+          padding: 0.375rem 1rem;
+          transition: all 0.2s ease;
+
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+          }
+
+          i {
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+
+    // Bouton de fermeture
+    .btn-close {
+      flex-shrink: 0;
+      margin-left: auto;
+      padding: 0.5rem;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+      opacity: 0.7;
+
+      &:hover {
+        opacity: 1;
+        background: rgba(0, 0, 0, 0.1);
+        transform: scale(1.1);
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  // Types d'alertes avec couleurs personnalisées
+  .alert-danger {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    color: #991b1b;
+    border-left-color: #dc2626;
+
+    .alert-icon i {
+      color: #dc2626;
+    }
+
+    .btn-outline-danger {
+      border-color: #dc2626;
+      color: #dc2626;
+
+      &:hover {
+        background: #dc2626;
+        border-color: #dc2626;
+        color: white;
+      }
+    }
+  }
+
+  .alert-warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+    border-left-color: #f59e0b;
+
+    .alert-icon i {
+      color: #f59e0b;
+    }
+
+    .btn-outline-warning {
+      border-color: #f59e0b;
+      color: #f59e0b;
+
+      &:hover {
+        background: #f59e0b;
+        border-color: #f59e0b;
+        color: white;
+      }
+    }
+  }
+
+  .alert-info {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    color: #1e40af;
+    border-left-color: #3b82f6;
+
+    .alert-icon i {
+      color: #3b82f6;
+    }
+
+    .btn-outline-info {
+      border-color: #3b82f6;
+      color: #3b82f6;
+
+      &:hover {
+        background: #3b82f6;
+        border-color: #3b82f6;
+        color: white;
+      }
+    }
+  }
+
+  .alert-success {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+    border-left-color: #10b981;
+
+    .alert-icon i {
+      color: #10b981;
+    }
+
+    .btn-outline-success {
+      border-color: #10b981;
+      color: #10b981;
+
+      &:hover {
+        background: #10b981;
+        border-color: #10b981;
+        color: white;
+      }
+    }
+  }
+
+  // Alertes avec animation
+  &.alert-animated {
+    .alert {
+      animation: slideInRight 0.3s ease-out;
+    }
+  }
+
+  // Alertes fermables
+  &.alert-dismissible {
+    .alert {
+      padding-right: 3rem;
+    }
+  }
+
+  // Responsive design
+  @media (max-width: 576px) {
+    .alert {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+
+      .alert-icon {
+        align-self: flex-start;
+      }
+
+      .btn-close {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+      }
+    }
+
+    &.alert-dismissible .alert {
+      padding-right: 1.25rem;
+      padding-top: 1.5rem;
+    }
+  }
+
+  // Mode sombre
+  @media (prefers-color-scheme: dark) {
+    .alert {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+      .btn-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+    }
+
+    .alert-danger {
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
+    }
+
+    .alert-warning {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+    }
+
+    .alert-info {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+    }
+
+    .alert-success {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+    }
+  }
+}
+
+// Animations
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Animation d'apparition
+.error-alert {
+  animation: fadeIn 0.3s ease-out;
+}
+
+// Hover effects
+.error-alert:hover .alert {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+// Focus states
+.error-alert .alert:focus-within {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+// Print styles
+@media print {
+  .error-alert {
+    break-inside: avoid;
+    
+    .alert {
+      box-shadow: none;
+      border: 1px solid currentColor;
+    }
+  }
+}
+

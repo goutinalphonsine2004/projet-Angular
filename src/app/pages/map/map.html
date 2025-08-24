@@ -1,0 +1,272 @@
+<div class="map-container" [class.fullscreen]="isFullscreen">
+  <!-- Header avec navigation -->
+  <div class="header-section">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-md-4">
+          <h1 class="page-title">
+            <i class="bi bi-geo-alt"></i>
+            Carte météo
+          </h1>
+          <p class="subtitle" *ngIf="city">
+            <i class="bi bi-geo-alt-fill"></i>
+            {{ city.name }}
+            <span *ngIf="city.country">, {{ city.country }}</span>
+          </p>
+        </div>
+        
+        <div class="col-md-4">
+          <!-- Barre de recherche -->
+          <div class="search-container">
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-search"></i>
+              </span>
+              <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Rechercher une ville..."
+                formControlName="searchControl"
+                [class.is-searching]="isSearching">
+              <button 
+                class="btn btn-outline-secondary" 
+                type="button"
+                (click)="getCurrentLocation()"
+                [disabled]="isLoadingLocation"
+                title="Ma position actuelle">
+                <i class="bi bi-geo-alt" [class.bi-spin]="isLoadingLocation"></i>
+              </button>
+              <button 
+                class="btn btn-outline-primary" 
+                type="button"
+                (click)="pointToCity(searchControl.value || '')"
+                [disabled]="!searchControl.value || searchControl.value.length < 2 || isLoadingLocation"
+                title="Pointer sur cette ville">
+                <i class="bi bi-cursor"></i>
+              </button>
+            </div>
+            
+            <!-- Résultats de recherche -->
+            <div class="search-results" *ngIf="searchResults.length > 0">
+              <div class="list-group">
+                <button 
+                  type="button"
+                  class="list-group-item list-group-item-action"
+                  *ngFor="let city of searchResults"
+                  (click)="onCitySelected(city)">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <strong>{{ city.name }}</strong>
+                      <small class="text-muted d-block" *ngIf="city.state">{{ city.state }}</small>
+                    </div>
+                    <span class="badge bg-primary">{{ city.country }}</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-4 text-end">
+          <div class="navigation-buttons">
+            <button class="btn btn-outline-primary me-2" (click)="navigateToHome()">
+              <i class="bi bi-house"></i> Accueil
+            </button>
+            <button class="btn btn-outline-info me-2" (click)="navigateToForecast24h()">
+              <i class="bi bi-clock-history"></i> 24h
+            </button>
+            <button class="btn btn-outline-success me-2" (click)="navigateToForecast7days()">
+              <i class="bi bi-calendar-week"></i> 7 jours
+            </button>
+            <button class="btn btn-outline-warning" (click)="navigateToDetails()">
+              <i class="bi bi-info-circle"></i> Détails
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gestion des erreurs -->
+  <app-error-alert 
+    *ngIf="errorMessage"
+    [error]="errorMessage"
+    (actionClick)="onErrorAction(errorMessage)">
+  </app-error-alert>
+
+  <!-- Contrôles de la carte -->
+  <div class="map-controls">
+    <div class="control-group">
+      <button 
+        class="btn btn-outline-secondary btn-sm"
+        (click)="toggleWeatherLayers()"
+        [class.active]="showWeatherLayers"
+        title="Couches météo">
+        <i class="bi bi-cloud"></i>
+      </button>
+      
+      <button 
+        class="btn btn-outline-secondary btn-sm"
+        (click)="toggleFullscreen()"
+        [class.active]="isFullscreen"
+        title="Plein écran">
+        <i class="bi" [class.bi-fullscreen]="!isFullscreen" [class.bi-fullscreen-exit]="isFullscreen"></i>
+      </button>
+      
+      <button 
+        class="btn btn-outline-secondary btn-sm"
+        (click)="reloadWeather()"
+        [disabled]="isLoading"
+        title="Actualiser">
+        <i class="bi bi-arrow-clockwise" [class.bi-spin]="isLoading"></i>
+      </button>
+      
+      <button 
+        class="btn btn-outline-info btn-sm"
+        (click)="getCurrentLocation()"
+        [disabled]="isLoadingLocation"
+        title="Ma position GPS">
+        <i class="bi bi-geo-alt" [class.bi-spin]="isLoadingLocation"></i>
+      </button>
+      
+      <button 
+        class="btn btn-outline-success btn-sm"
+        (click)="pointToCity('Paris')"
+        title="Pointer sur Paris">
+        <i class="bi bi-building"></i>
+      </button>
+      
+      <button 
+        class="btn btn-outline-warning btn-sm"
+        (click)="pointToCity('Lyon')"
+        title="Pointer sur Lyon">
+        <i class="bi bi-geo-alt-fill"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Informations météo actuelles -->
+  <div class="weather-info-panel" *ngIf="currentWeather">
+    <div class="card">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-md-3">
+            <div class="city-info">
+              <h5 class="city-name">{{ currentWeather.name }}</h5>
+              <small class="text-muted" *ngIf="currentWeather.sys.country">
+                {{ currentWeather.sys.country }}
+              </small>
+            </div>
+          </div>
+          
+          <div class="col-md-3 text-center">
+            <div class="weather-icon">
+              <img [src]="getWeatherIcon(currentWeather.weather[0]?.icon || '')" 
+                   [alt]="currentWeather.weather[0]?.description"
+                   class="weather-icon-img">
+            </div>
+          </div>
+          
+          <div class="col-md-3 text-center">
+            <div class="temperature">
+              <span class="temp-value" [class]="getTemperatureClass(currentWeather.main.temp)">
+                {{ currentWeather.main.temp | number:'1.0-0' }}°C
+              </span>
+              <div class="temp-feels-like">
+                Ressenti: {{ currentWeather.main.feels_like | number:'1.0-0' }}°C
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-3">
+            <div class="weather-details">
+              <div class="detail-item">
+                <i class="bi bi-droplet"></i>
+                <span>{{ currentWeather.main.humidity }}%</span>
+              </div>
+              <div class="detail-item">
+                <i class="bi bi-wind"></i>
+                <span>{{ currentWeather.wind.speed | number:'1.0-0' }} km/h</span>
+              </div>
+              <div class="detail-item">
+                <i class="bi bi-eye"></i>
+                <span>{{ (currentWeather.visibility / 1000) | number:'1.0-1' }} km</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conteneur de la carte -->
+  <div class="map-wrapper">
+    <div #mapContainer class="map-container-leaflet"></div>
+    
+    <!-- Loading overlay -->
+    <div class="map-loading-overlay" *ngIf="isLoading">
+      <div class="loading-content">
+        <app-loading-spinner></app-loading-spinner>
+        <p class="mt-2">Chargement de la météo...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Légende des couches météo -->
+  <div class="weather-legend" *ngIf="showWeatherLayers">
+    <div class="card">
+      <div class="card-header">
+        <h6 class="mb-0">
+          <i class="bi bi-info-circle"></i>
+          Légende des couches météo
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="legend-items">
+          <div class="legend-item">
+            <div class="legend-color temp-color"></div>
+            <span>Température (°C)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color precip-color"></div>
+            <span>Précipitations (mm/h)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color wind-color"></div>
+            <span>Vent (m/s)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color pressure-color"></div>
+            <span>Pression (hPa)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color clouds-color"></div>
+            <span>Nuages (%)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instructions d'utilisation -->
+  <div class="map-instructions">
+    <div class="card">
+      <div class="card-body">
+        <h6>
+          <i class="bi bi-lightbulb"></i>
+          Comment utiliser la carte
+        </h6>
+        <ul class="instructions-list">
+          <li><strong>Zoom :</strong> Utilisez la molette de souris ou les boutons +/-</li>
+          <li><strong>Navigation :</strong> Cliquez et glissez pour vous déplacer</li>
+          <li><strong>Recherche :</strong> Tapez le nom d'une ville dans la barre de recherche</li>
+          <li><strong>Géolocalisation :</strong> Cliquez sur le bouton de localisation</li>
+          <li><strong>Pointer sur une ville :</strong> Utilisez le bouton avec l'icône curseur pour pointer sur la ville recherchée</li>
+          <li><strong>Villes rapides :</strong> Utilisez les boutons Paris/Lyon pour pointer directement sur ces villes</li>
+          <li><strong>Clic sur carte :</strong> Cliquez n'importe où pour obtenir la météo</li>
+          <li><strong>Couches météo :</strong> Utilisez le bouton des couches pour afficher/masquer les données météo</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,106 @@
+<div class="forecast-chart-container">
+  <!-- En-tête du graphique -->
+  <div class="chart-header" *ngIf="showControls">
+    <div class="chart-title">
+      <h5>{{ title }}</h5>
+    </div>
+    
+    <div class="chart-controls">
+      <div class="btn-group btn-group-sm" role="group">
+        <button 
+          type="button" 
+          class="btn" 
+          [class.btn-primary]="chartType === 'line'"
+          [class.btn-outline-primary]="chartType !== 'line'"
+          (click)="onChartTypeChange('line')"
+          title="Graphique en ligne">
+          <i class="bi bi-graph-up"></i>
+        </button>
+        <button 
+          type="button" 
+          class="btn" 
+          [class.btn-primary]="chartType === 'bar'"
+          [class.btn-outline-primary]="chartType !== 'bar'"
+          (click)="onChartTypeChange('bar')"
+          title="Graphique en barres">
+          <i class="bi bi-bar-chart"></i>
+        </button>
+      </div>
+      
+      <div class="btn-group btn-group-sm ms-2" role="group">
+        <button 
+          type="button" 
+          class="btn btn-outline-secondary"
+          (click)="onRefreshClick()"
+          title="Actualiser">
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-outline-secondary"
+          (click)="onFullscreenClick()"
+          title="Plein écran">
+          <i class="bi bi-fullscreen"></i>
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-outline-secondary"
+          (click)="onExportClick()"
+          title="Exporter">
+          <i class="bi bi-download"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conteneur du graphique -->
+  <div class="chart-wrapper" [style.height.px]="height">
+    <canvas #chartCanvas></canvas>
+    
+    <!-- Message de chargement -->
+    <div class="chart-loading" *ngIf="isLoading">
+      <div class="loading-content">
+        <i class="bi bi-arrow-clockwise bi-spin"></i>
+        <p>Chargement du graphique...</p>
+      </div>
+    </div>
+    
+    <!-- Message si pas de données -->
+    <div class="chart-no-data" *ngIf="!isLoading && !chartData">
+      <div class="no-data-content">
+        <i class="bi bi-graph-down text-muted"></i>
+        <p>Aucune donnée disponible pour le graphique</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Résumé des statistiques -->
+  <div class="chart-summary" *ngIf="showSummary && chartData">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="summary-item">
+          <span class="label">Temp. Max:</span>
+          <span class="value text-danger">{{ maxTemp }}°C</span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="summary-item">
+          <span class="label">Temp. Min:</span>
+          <span class="value text-primary">{{ minTemp }}°C</span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="summary-item">
+          <span class="label">Temp. Moy:</span>
+          <span class="value text-info">{{ avgTemp }}°C</span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="summary-item">
+          <span class="label">Pluie:</span>
+          <span class="value text-warning">{{ rainProbability }}%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

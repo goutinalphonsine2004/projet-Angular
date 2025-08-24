@@ -1,0 +1,838 @@
+// Variables
+$primary-color: #007bff;
+$success-color: #28a745;
+$warning-color: #ffc107;
+$danger-color: #dc3545;
+$info-color: #17a2b8;
+$light-color: #f8f9fa;
+$dark-color: #343a40;
+$border-radius: 0.5rem;
+$box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+$transition: all 0.3s ease;
+
+// Mixins
+@mixin card-hover {
+  transition: $transition;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+}
+
+@mixin responsive-grid($breakpoint) {
+  @media (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+// Styles principaux
+.map-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f8f9fa;
+
+  &.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+  }
+
+  // Header Section
+  .header-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+    z-index: 1000;
+    flex-shrink: 0;
+
+    .page-title {
+      color: $dark-color;
+      font-weight: 700;
+      margin: 0;
+      font-size: 1.75rem;
+      
+      i {
+        color: $primary-color;
+        margin-right: 0.5rem;
+      }
+    }
+
+    .subtitle {
+      color: #6c757d;
+      margin: 0.25rem 0 0 0;
+      font-size: 0.9rem;
+      
+      i {
+        margin-right: 0.25rem;
+        color: $warning-color;
+      }
+    }
+
+    .navigation-buttons {
+      .btn {
+        border-radius: $border-radius;
+        font-weight: 500;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        transition: $transition;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        
+        i {
+          margin-right: 0.5rem;
+          font-size: 1rem;
+        }
+        
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: $box-shadow;
+        }
+      }
+    }
+  }
+
+  // Search Container
+  .search-container {
+    position: relative;
+    
+    .input-group {
+      .form-control {
+        border-radius: $border-radius;
+        border: 1px solid #ced4da;
+        transition: $transition;
+        
+        &:focus {
+          border-color: $primary-color;
+          box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        &.is-searching {
+          border-color: $warning-color;
+        }
+      }
+      
+      .btn {
+        border-radius: 0 $border-radius $border-radius 0;
+        border-left: none;
+        
+        &:hover {
+          background-color: $primary-color;
+          border-color: $primary-color;
+          color: white;
+        }
+      }
+    }
+    
+    .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      margin-top: 0.25rem;
+      
+      .list-group {
+        border-radius: $border-radius;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+        
+        .list-group-item {
+          border: none;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+          transition: $transition;
+          
+          &:last-child {
+            border-bottom: none;
+          }
+          
+          &:hover {
+            background-color: $light-color;
+            transform: translateX(2px);
+          }
+          
+          .badge {
+            font-size: 0.75rem;
+          }
+        }
+      }
+    }
+  }
+
+  // Map Controls
+  .map-controls {
+    position: absolute;
+    top: 120px;
+    right: 20px;
+    z-index: 1000;
+    
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      
+      .btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        transition: $transition;
+        font-size: 0.875rem;
+        
+        &:hover {
+          background: white;
+          transform: scale(1.1);
+          box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
+        }
+        
+        &.active {
+          background: $primary-color;
+          color: white;
+          border-color: $primary-color;
+        }
+        
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          transform: none;
+          
+          &:hover {
+            transform: none;
+            box-shadow: none;
+          }
+        }
+        
+        // Styles spécifiques pour les boutons de localisation
+        &.btn-outline-info {
+          &:hover {
+            background: $info-color;
+            color: white;
+            border-color: $info-color;
+          }
+        }
+        
+        &.btn-outline-success {
+          &:hover {
+            background: $success-color;
+            color: white;
+            border-color: $success-color;
+          }
+        }
+        
+        &.btn-outline-warning {
+          &:hover {
+            background: $warning-color;
+            color: white;
+            border-color: $warning-color;
+          }
+        }
+      }
+    }
+  }
+
+  // Weather Info Panel
+  .weather-info-panel {
+    position: absolute;
+    top: 120px;
+    left: 20px;
+    z-index: 1000;
+    max-width: 400px;
+    
+    .card {
+      border: none;
+      border-radius: $border-radius;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      
+      .card-body {
+        padding: 1rem;
+      }
+    }
+    
+    .city-name {
+      margin: 0;
+      font-weight: 600;
+      color: $dark-color;
+    }
+    
+    .weather-icon {
+      .weather-icon-img {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+      }
+    }
+    
+    .temperature {
+      .temp-value {
+        font-size: 2rem;
+        font-weight: 700;
+        display: block;
+      }
+      
+      .temp-feels-like {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+      }
+    }
+    
+    .weather-details {
+      .detail-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        
+        i {
+          margin-right: 0.5rem;
+          color: $info-color;
+          width: 16px;
+        }
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  // Map Wrapper
+  .map-wrapper {
+    flex: 1;
+    position: relative;
+    
+    .map-container-leaflet {
+      width: 100%;
+      height: 100%;
+      background: #e9ecef;
+    }
+    
+    .map-loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      
+      .loading-content {
+        text-align: center;
+        
+        p {
+          margin: 0;
+          color: #6c757d;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  // Weather Legend
+  .weather-legend {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+    max-width: 300px;
+    
+    .card {
+      border: none;
+      border-radius: $border-radius;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      
+      .card-header {
+        background: linear-gradient(135deg, $info-color, darken($info-color, 10%));
+        color: white;
+        border: none;
+        border-radius: $border-radius $border-radius 0 0;
+        padding: 0.75rem 1rem;
+        
+        h6 {
+          margin: 0;
+          font-weight: 600;
+          
+          i {
+            margin-right: 0.5rem;
+          }
+        }
+      }
+      
+      .card-body {
+        padding: 1rem;
+      }
+    }
+    
+    .legend-items {
+      .legend-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        .legend-color {
+          width: 20px;
+          height: 20px;
+          border-radius: 4px;
+          margin-right: 0.75rem;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .temp-color {
+          background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+        }
+        
+        .precip-color {
+          background: linear-gradient(90deg, #45b7d1, #96ceb4);
+        }
+        
+        .wind-color {
+          background: linear-gradient(90deg, #feca57, #ff9ff3);
+        }
+        
+        .pressure-color {
+          background: linear-gradient(90deg, #54a0ff, #5f27cd);
+        }
+        
+        .clouds-color {
+          background: linear-gradient(90deg, #c8d6e5, #8395a7);
+        }
+      }
+    }
+  }
+
+  // Map Instructions
+  .map-instructions {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 350px;
+    
+    .card {
+      border: none;
+      border-radius: $border-radius;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      
+      .card-body {
+        padding: 1rem;
+      }
+    }
+    
+    h6 {
+      color: $dark-color;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      
+      i {
+        color: $warning-color;
+        margin-right: 0.5rem;
+      }
+    }
+    
+    .instructions-list {
+      margin: 0;
+      padding-left: 1.25rem;
+      font-size: 0.875rem;
+      
+      li {
+        margin-bottom: 0.5rem;
+        color: #6c757d;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        strong {
+          color: $dark-color;
+        }
+      }
+    }
+  }
+}
+
+// Styles des marqueurs Leaflet
+.search-marker {
+  background: $primary-color;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
+  border: 2px solid white;
+}
+
+.weather-marker {
+  .marker-content {
+    background: white;
+    border-radius: $border-radius;
+    padding: 0.5rem;
+    text-align: center;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2);
+    border: 2px solid;
+    min-width: 80px;
+    
+    .temperature {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .city {
+      font-size: 0.75rem;
+      color: #6c757d;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  
+  &.temp-cold .marker-content {
+    border-color: $primary-color;
+    .temperature { color: $primary-color; }
+  }
+  
+  &.temp-cool .marker-content {
+    border-color: $info-color;
+    .temperature { color: $info-color; }
+  }
+  
+  &.temp-warm .marker-content {
+    border-color: $success-color;
+    .temperature { color: $success-color; }
+  }
+  
+  &.temp-hot .marker-content {
+    border-color: $warning-color;
+    .temperature { color: $warning-color; }
+  }
+  
+  &.temp-very-hot .marker-content {
+    border-color: $danger-color;
+    .temperature { color: $danger-color; }
+  }
+}
+
+// Styles du popup météo
+.weather-popup {
+  .weather-info {
+    .temp-main {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: $danger-color;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .weather-desc {
+      text-align: center;
+      color: #6c757d;
+      margin-bottom: 0.75rem;
+      text-transform: capitalize;
+    }
+    
+    .weather-details {
+      font-size: 0.875rem;
+      color: #6c757d;
+      margin-bottom: 0.75rem;
+      
+      div {
+        margin-bottom: 0.25rem;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+  
+  .popup-actions {
+    text-align: center;
+    
+    .btn {
+      font-size: 0.875rem;
+      padding: 0.375rem 0.75rem;
+    }
+  }
+}
+
+// Responsive Design
+@include responsive-grid(1200px) {
+  .map-container {
+    .weather-info-panel,
+    .weather-legend,
+    .map-instructions {
+      max-width: 300px;
+    }
+  }
+}
+
+@include responsive-grid(992px) {
+  .map-container {
+    .header-section {
+      .page-title {
+        font-size: 1.5rem;
+      }
+      
+      .navigation-buttons {
+        .btn {
+          padding: 0.375rem 0.5rem;
+          font-size: 0.8rem;
+        }
+      }
+    }
+    
+    .weather-info-panel,
+    .weather-legend,
+    .map-instructions {
+      max-width: 250px;
+    }
+  }
+}
+
+@include responsive-grid(768px) {
+  .map-container {
+    .header-section {
+      padding: 0.75rem 0;
+      
+      .page-title {
+        font-size: 1.25rem;
+        text-align: center;
+      }
+      
+      .subtitle {
+        text-align: center;
+      }
+      
+      .navigation-buttons {
+        text-align: center;
+        margin-top: 0.75rem;
+        
+        .btn {
+          margin-bottom: 0.5rem;
+          width: 100%;
+          padding: 0.75rem 1rem;
+          font-size: 1rem;
+          min-height: 44px;
+          
+          i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+          }
+        }
+      }
+    }
+    
+    .search-container {
+      margin: 0.75rem 0;
+    }
+    
+    .map-controls {
+      top: 100px;
+      right: 10px;
+      
+      .control-group .btn {
+        width: 35px;
+        height: 35px;
+      }
+    }
+    
+    .weather-info-panel {
+      top: 100px;
+      left: 10px;
+      max-width: 200px;
+      
+      .card-body {
+        padding: 0.75rem;
+      }
+      
+      .temperature .temp-value {
+        font-size: 1.5rem;
+      }
+    }
+    
+    .weather-legend,
+    .map-instructions {
+      bottom: 10px;
+      max-width: 200px;
+      
+      .card-body {
+        padding: 0.75rem;
+      }
+    }
+  }
+}
+
+@include responsive-grid(576px) {
+  .map-container {
+    .header-section .page-title {
+      font-size: 1.1rem;
+    }
+    
+    .search-container .input-group {
+      flex-direction: column;
+      
+      .form-control {
+        border-radius: $border-radius;
+        border-right: 1px solid #ced4da;
+        margin-bottom: 0.5rem;
+      }
+      
+      .btn {
+        border-radius: $border-radius;
+        border: 1px solid #ced4da;
+        border-left: 1px solid #ced4da;
+      }
+    }
+    
+    .weather-info-panel {
+      max-width: 180px;
+      
+      .card-body {
+        padding: 0.5rem;
+      }
+      
+      .weather-icon .weather-icon-img {
+        width: 40px;
+        height: 40px;
+      }
+      
+      .temperature .temp-value {
+        font-size: 1.25rem;
+      }
+    }
+    
+    .weather-legend,
+    .map-instructions {
+      max-width: 180px;
+      
+      .card-body {
+        padding: 0.5rem;
+      }
+      
+      .legend-items .legend-item {
+        font-size: 0.8rem;
+      }
+      
+      .instructions-list {
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .map-container {
+    background: #212529;
+    
+    .header-section {
+      background: rgba(52, 58, 64, 0.95);
+      
+      .page-title {
+        color: white;
+      }
+      
+      .subtitle {
+        color: #adb5bd;
+      }
+    }
+    
+    .card {
+      background: rgba(52, 58, 64, 0.95);
+      color: white;
+    }
+    
+    .city-name {
+      color: white;
+    }
+    
+    .temp-feels-like,
+    .weather-details .detail-item {
+      color: #adb5bd;
+    }
+    
+    .legend-items .legend-item {
+      color: #adb5bd;
+      
+      strong {
+        color: white;
+      }
+    }
+    
+    .instructions-list li {
+      color: #adb5bd;
+      
+      strong {
+        color: white;
+      }
+    }
+  }
+}
+
+// Animations
+.weather-marker {
+  animation: markerBounce 0.6s ease-out;
+}
+
+@keyframes markerBounce {
+  0% {
+    transform: scale(0) translateY(20px);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1) translateY(-5px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $primary-color;
+  border-radius: 4px;
+  
+  &:hover {
+    background: darken($primary-color, 10%);
+  }
+}

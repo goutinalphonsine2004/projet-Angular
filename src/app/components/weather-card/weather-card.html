@@ -1,0 +1,128 @@
+<div class="weather-card" [ngClass]="{
+  'card-sm': size === 'sm',
+  'card-md': size === 'md', 
+  'card-lg': size === 'lg',
+  'weather-sunny': isWeatherType('clear'),
+  'weather-cloudy': isWeatherType('clouds'),
+  'weather-rainy': isWeatherType('rain'),
+  'weather-snowy': isWeatherType('snow'),
+  'weather-stormy': isWeatherType('thunderstorm')
+}">
+  <div class="card h-100">
+    <!-- Header avec ville et favoris -->
+    <div class="card-header d-flex justify-content-between align-items-center" *ngIf="showHeader">
+      <div>
+        <h6 class="mb-0 fw-bold">{{ weather?.name }}</h6>
+                  <small class="text-muted" *ngIf="weather?.sys?.country">
+            <i class="fas fa-map-marker-alt me-1"></i>
+            {{ weather?.sys?.country }}
+          </small>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <!-- Bouton favoris -->
+        <button 
+          class="btn btn-sm btn-outline-danger" 
+          [class.btn-danger]="isFavorite"
+          (click)="toggleFavorite()"
+          *ngIf="showFavoriteButton"
+          [title]="isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'">
+          <i class="fas fa-heart" [class.text-white]="isFavorite"></i>
+        </button>
+        <!-- Actions supplémentaires -->
+        <div class="dropdown" *ngIf="showActions">
+          <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" (click)="onDetailsClick()"><i class="fas fa-info-circle me-2"></i>Détails</a></li>
+            <li><a class="dropdown-item" (click)="onMapClick()"><i class="fas fa-map me-2"></i>Voir sur la carte</a></li>
+            <li><a class="dropdown-item" (click)="onShareClick()"><i class="fas fa-share me-2"></i>Partager</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Corps principal -->
+    <div class="card-body">
+      <div class="row align-items-center" *ngIf="weather; else loadingTemplate">
+        <!-- Température principale -->
+        <div class="col-md-6">
+          <div class="main-weather text-center text-md-start">
+            <div class="temperature-display">
+              <span class="temperature">{{ formatTemperature(weather.main.temp) }}</span>
+              <div class="weather-icon-container">
+                <img 
+                  [src]="getWeatherIconUrl(weather.weather[0]?.icon || '')"
+                  [alt]="weather.weather[0]?.description || ''"
+                  class="weather-icon"
+                  [title]="weather.weather[0]?.description || ''">
+              </div>
+            </div>
+            <p class="weather-description text-capitalize mb-2">
+              {{ weather.weather[0]?.description || 'Météo' }}
+            </p>
+            <div class="feels-like" *ngIf="showFeelsLike">
+              <small class="text-muted">
+                Ressenti: {{ formatTemperature(weather.main.feels_like) }}
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informations détaillées -->
+        <div class="col-md-6" *ngIf="showDetails">
+          <div class="weather-details">
+            <div class="detail-row">
+              <div class="detail-item">
+                <i class="fas fa-thermometer-half text-info"></i>
+                <div>
+                  <small class="text-muted">Min/Max</small>
+                  <div class="fw-bold">{{ formatTemperature(weather.main.temp_min) }} / {{ formatTemperature(weather.main.temp_max) }}</div>
+                </div>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-tint text-primary"></i>
+                <div>
+                  <small class="text-muted">Humidité</small>
+                  <div class="fw-bold">{{ weather.main.humidity }}%</div>
+                </div>
+              </div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-item">
+                <i class="fas fa-wind text-success"></i>
+                <div>
+                  <small class="text-muted">Vent</small>
+                  <div class="fw-bold">{{ formatWindSpeed(weather.wind?.speed || 0) }}</div>
+                </div>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-gauge text-warning"></i>
+                <div>
+                  <small class="text-muted">Pression</small>
+                  <div class="fw-bold">{{ weather.main.pressure }} hPa</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Template de chargement -->
+      <ng-template #loadingTemplate>
+        <div class="text-center py-4">
+          <div class="spinner-border text-primary mb-3"></div>
+          <p class="text-muted mb-0">Chargement...</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Footer avec timestamp -->
+    <div class="card-footer text-center" *ngIf="showTimestamp && weather">
+      <small class="text-muted">
+        <i class="fas fa-clock me-1"></i>
+        Mis à jour: {{ getUpdateTime(weather.dt) }}
+      </small>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,219 @@
+// Styles pour la navigation principale
+.navbar {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  
+  .navbar-brand {
+    font-size: 1.5rem;
+    color: #007bff !important;
+    
+    &:hover {
+      color: #0056b3 !important;
+    }
+  }
+  
+  .navbar-nav {
+    .nav-item {
+      margin: 0 0.25rem;
+      
+      .nav-link {
+        color: #495057 !important;
+        font-weight: 500;
+        padding: 0.75rem 1rem;
+        border-radius: 0.375rem;
+        transition: all 0.3s ease;
+        position: relative;
+        
+        &:hover {
+          color: #007bff !important;
+          background-color: rgba(0, 123, 255, 0.1);
+          transform: translateY(-1px);
+        }
+        
+        &.active {
+          color: #007bff !important;
+          background-color: rgba(0, 123, 255, 0.15);
+          font-weight: 600;
+        }
+        
+        // Indicateur de page active
+        &.active::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 20px;
+          height: 3px;
+          background-color: #007bff;
+          border-radius: 2px;
+        }
+      }
+    }
+  }
+  
+  // Bouton hamburger - on le cache sur desktop
+  .navbar-toggler {
+    border: none;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.3s ease;
+    
+    @media (min-width: 992px) {
+      display: none !important;
+    }
+    
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    &:not(.collapsed) {
+      background-color: rgba(0, 123, 255, 0.1);
+      
+      .navbar-toggler-icon {
+        transform: rotate(90deg);
+      }
+    }
+    
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      transition: transform 0.3s ease;
+    }
+  }
+  
+  // Menu mobile et desktop - TOUJOURS VISIBLE
+  .navbar-collapse {
+    transition: all 0.3s ease;
+    
+    // Sur desktop (992px et plus) - TOUJOURS VISIBLE
+    @media (min-width: 992px) {
+      display: flex !important;
+      flex-basis: auto;
+      opacity: 1 !important;
+      visibility: visible !important;
+      transform: none !important;
+      max-height: none !important;
+      overflow: visible !important;
+      
+      // Force l'affichage même avec la classe collapse
+      &.collapse {
+        display: flex !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      
+      &.show {
+        display: flex !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+    }
+    
+    // Sur mobile (moins de 992px) - visible seulement au clic
+    @media (max-width: 991.98px) {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background-color: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      border-radius: 0 0 0.5rem 0.5rem;
+      margin-top: 0;
+      padding: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      
+      &.collapse {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        max-height: 0;
+        overflow: hidden;
+        display: none;
+      }
+      
+      &.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        max-height: 500px;
+        display: block;
+      }
+      
+      .navbar-nav {
+        .nav-item {
+          margin: 0.5rem 0;
+          
+          .nav-link {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            
+            &:hover {
+              background-color: rgba(0, 123, 255, 0.1);
+            }
+            
+            &.active {
+              background-color: rgba(0, 123, 255, 0.15);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Animation pour le menu mobile
+.navbar-collapse.show {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Amélioration de la navbar fixe
+.navbar.fixed-top {
+  z-index: 1030;
+}
+
+// Styles pour le contenu principal
+main {
+  min-height: calc(100vh - 80px);
+}
+
+// Responsive design
+@media (max-width: 576px) {
+  .navbar {
+    .navbar-brand {
+      font-size: 1.25rem;
+    }
+    
+    .navbar-nav .nav-item .nav-link {
+      font-size: 1rem;
+      padding: 0.875rem;
+    }
+    
+    .navbar-collapse {
+      padding: 0.75rem;
+      
+      .navbar-nav .nav-item .nav-link {
+        padding: 0.875rem;
+        font-size: 0.95rem;
+      }
+    }
+  }
+}

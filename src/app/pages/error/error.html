@@ -1,0 +1,313 @@
+<div class="error-container" [ngClass]="getErrorContainerClass()">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h1 class="page-title">
+            <i class="bi bi-exclamation-triangle"></i>
+            Page d'erreur
+          </h1>
+          <p class="subtitle">
+            Gestion centralisée des erreurs de l'application
+          </p>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+          <div class="navigation-buttons">
+            <button class="btn btn-outline-primary me-2" (click)="navigateToHome()">
+              <i class="bi bi-house"></i>
+              Accueil
+            </button>
+            <button class="btn btn-outline-secondary" (click)="goBack()">
+              <i class="bi bi-arrow-left"></i>
+              Retour
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="container">
+      <!-- Error Alert from Service -->
+      <app-error-alert 
+        *ngIf="errorMessageFromService"
+        [error]="errorMessageFromService"
+        (actionClick)="onErrorAction($event)"
+        (dismiss)="clearError()">
+      </app-error-alert>
+
+      <!-- Error Display -->
+      <div class="error-display">
+        <div class="row justify-content-center">
+          <div class="col-lg-8 col-xl-6">
+            <!-- Main Error Card -->
+            <div class="error-card">
+              <div class="error-header">
+                <div class="error-icon" [ngClass]="getErrorIconClass()">
+                  <i [class]="'bi ' + getErrorIcon()"></i>
+                </div>
+                <h2 class="error-title">{{ errorTitle }}</h2>
+                <div class="error-code">{{ getFormattedErrorCode() }}</div>
+              </div>
+
+              <div class="error-content">
+                <p class="error-message">{{ errorMessage }}</p>
+                <p class="error-details">{{ errorDetails }}</p>
+
+                <!-- Help Message -->
+                <div class="help-message" *ngIf="getHelpMessage()">
+                  <i class="bi bi-lightbulb text-warning"></i>
+                  <span>{{ getHelpMessage() }}</span>
+                </div>
+
+                <!-- Suggestions -->
+                <div class="suggestions" *ngIf="getSuggestions().length > 0">
+                  <h5>Suggestions :</h5>
+                  <ul class="suggestions-list">
+                    <li *ngFor="let suggestion of getSuggestions()">
+                      <i class="bi bi-check-circle text-success"></i>
+                      {{ suggestion }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="error-actions">
+                <div class="row g-3">
+                  <!-- Home Button -->
+                  <div class="col-6 col-md-3" *ngIf="showHomeButton">
+                    <button 
+                      class="btn w-100" 
+                      [ngClass]="getPrimaryButtonClass()"
+                      (click)="navigateToHome()">
+                      <i class="bi bi-house"></i>
+                      Accueil
+                    </button>
+                  </div>
+
+                  <!-- Back Button -->
+                  <div class="col-6 col-md-3" *ngIf="showBackButton">
+                    <button 
+                      class="btn btn-outline-secondary w-100" 
+                      (click)="goBack()">
+                      <i class="bi bi-arrow-left"></i>
+                      Retour
+                    </button>
+                  </div>
+
+                  <!-- Search Button -->
+                  <div class="col-6 col-md-3" *ngIf="showSearchButton">
+                    <button 
+                      class="btn btn-outline-info w-100" 
+                      (click)="navigateToSearch()">
+                      <i class="bi bi-search"></i>
+                      Rechercher
+                    </button>
+                  </div>
+
+                  <!-- Help Button -->
+                  <div class="col-6 col-md-3" *ngIf="showHelpButton">
+                    <button 
+                      class="btn btn-outline-warning w-100" 
+                      (click)="navigateToHelp()">
+                      <i class="bi bi-question-circle"></i>
+                      Aide
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Reload Button -->
+                <div class="text-center mt-3" *ngIf="isCriticalError()">
+                  <button 
+                    class="btn btn-outline-danger" 
+                    [disabled]="isLoading"
+                    (click)="reloadCurrentPage()">
+                    <i class="bi bi-arrow-clockwise" [class.bi-spin]="isLoading"></i>
+                    {{ isLoading ? 'Rechargement...' : 'Recharger la page' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Additional Help Section -->
+            <div class="help-section" *ngIf="isCriticalError() || isPermissionError()">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="mb-0">
+                    <i class="bi bi-info-circle text-info"></i>
+                    Besoin d'aide ?
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <p class="mb-3">
+                    Si le problème persiste, voici quelques options pour obtenir de l'aide :
+                  </p>
+                  
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <div class="help-option">
+                        <i class="bi bi-book text-primary"></i>
+                        <div>
+                          <h6>Documentation</h6>
+                          <small>Consultez notre guide utilisateur</small>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                      <div class="help-option">
+                        <i class="bi bi-envelope text-success"></i>
+                        <div>
+                          <h6>Support</h6>
+                          <small>Contactez notre équipe</small>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                      <div class="help-option">
+                        <i class="bi bi-chat-dots text-info"></i>
+                        <div>
+                          <h6>FAQ</h6>
+                          <small>Questions fréquemment posées</small>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                      <div class="help-option">
+                        <i class="bi bi-github text-dark"></i>
+                        <div>
+                          <h6>GitHub</h6>
+                          <small>Signalez un bug</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Error Type Specific Information -->
+            <div class="error-info" *ngIf="errorCode === '404'">
+              <div class="card">
+                <div class="card-body text-center">
+                  <i class="bi bi-search display-1 text-muted"></i>
+                  <h4>Page introuvable</h4>
+                  <p class="text-muted">
+                    La page que vous recherchez n'existe pas ou a été déplacée.
+                  </p>
+                  <div class="mt-3">
+                    <button class="btn btn-primary me-2" (click)="navigateToHome()">
+                      <i class="bi bi-house"></i>
+                      Retour à l'accueil
+                    </button>
+                    <button class="btn btn-outline-secondary" (click)="navigateToSearch()">
+                      <i class="bi bi-search"></i>
+                      Rechercher une ville
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="error-info" *ngIf="errorCode === '500'">
+              <div class="card">
+                <div class="card-body text-center">
+                  <i class="bi bi-exclamation-triangle display-1 text-danger"></i>
+                  <h4>Erreur serveur</h4>
+                  <p class="text-muted">
+                    Une erreur interne s'est produite. Nos équipes ont été notifiées.
+                  </p>
+                  <div class="mt-3">
+                    <button class="btn btn-danger me-2" (click)="reloadCurrentPage()">
+                      <i class="bi bi-arrow-clockwise"></i>
+                      Réessayer
+                    </button>
+                    <button class="btn btn-outline-primary" (click)="navigateToHome()">
+                      <i class="bi bi-house"></i>
+                      Accueil
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="error-info" *ngIf="errorCode === 'network'">
+              <div class="card">
+                <div class="card-body text-center">
+                  <i class="bi bi-wifi-off display-1 text-danger"></i>
+                  <h4>Problème de connexion</h4>
+                  <p class="text-muted">
+                    Vérifiez votre connexion internet et réessayez.
+                  </p>
+                  <div class="mt-3">
+                    <button class="btn btn-danger me-2" (click)="reloadCurrentPage()">
+                      <i class="bi bi-arrow-clockwise"></i>
+                      Réessayer
+                    </button>
+                    <button class="btn btn-outline-primary" (click)="navigateToHome()">
+                      <i class="bi bi-house"></i>
+                      Accueil
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="error-info" *ngIf="errorCode === 'geolocation'">
+              <div class="card">
+                <div class="card-body text-center">
+                  <i class="bi bi-geo-alt display-1 text-info"></i>
+                  <h4>Géolocalisation impossible</h4>
+                  <p class="text-muted">
+                    Nous ne pouvons pas obtenir votre position actuelle.
+                  </p>
+                  <div class="mt-3">
+                    <button class="btn btn-info me-2" (click)="navigateToSearch()">
+                      <i class="bi bi-search"></i>
+                      Rechercher une ville
+                    </button>
+                    <button class="btn btn-outline-primary" (click)="navigateToHome()">
+                      <i class="bi bi-house"></i>
+                      Accueil
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="footer-actions text-center mt-5">
+        <div class="row justify-content-center">
+          <div class="col-md-8">
+            <p class="text-muted mb-3">
+              Vous rencontrez des difficultés ? Nous sommes là pour vous aider.
+            </p>
+            <div class="btn-group" role="group">
+              <button class="btn btn-outline-primary" (click)="navigateToHome()">
+                <i class="bi bi-house"></i>
+                Retour à l'accueil
+              </button>
+              <button class="btn btn-outline-secondary" (click)="goBack()">
+                <i class="bi bi-arrow-left"></i>
+                Page précédente
+              </button>
+              <button class="btn btn-outline-info" (click)="navigateToSearch()">
+                <i class="bi bi-search"></i>
+                Rechercher
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

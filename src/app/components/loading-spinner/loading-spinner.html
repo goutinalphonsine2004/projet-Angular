@@ -1,0 +1,44 @@
+<div class="loading-spinner" [ngClass]="{
+  'spinner-sm': size === 'sm',
+  'spinner-md': size === 'md',
+  'spinner-lg': size === 'lg',
+  'spinner-xl': size === 'xl',
+  'spinner-overlay': overlay,
+  'spinner-inline': !overlay
+}">
+  <div class="spinner-content" *ngIf="overlay">
+    <div class="spinner-wrapper">
+      <!-- Spinner principal -->
+      <div class="spinner" [ngClass]="spinnerType">
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+      </div>
+      
+      <!-- Message de chargement -->
+      <div class="loading-message" *ngIf="message">
+        <p class="mb-0">{{ message }}</p>
+        <small class="text-muted" *ngIf="subMessage">{{ subMessage }}</small>
+      </div>
+      
+      <!-- Barre de progression si définie -->
+      <div class="progress-wrapper" *ngIf="progress !== null">
+        <div class="progress">
+          <div class="progress-bar" [style.width.%]="progress" role="progressbar">
+            {{ progress }}%
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Spinner inline (sans overlay) -->
+  <div class="spinner-inline-content" *ngIf="!overlay">
+    <div class="spinner" [ngClass]="spinnerType">
+      <div class="spinner-ring"></div>
+      <div class="spinner-ring"></div>
+      <div class="spinner-ring"></div>
+    </div>
+    <span class="loading-text" *ngIf="message">{{ message }}</span>
+  </div>
+</div>

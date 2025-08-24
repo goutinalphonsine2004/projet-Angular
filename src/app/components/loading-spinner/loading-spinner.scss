@@ -1,0 +1,294 @@
+.loading-spinner {
+  // Spinner inline (par défaut)
+  &.spinner-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .spinner-inline-content {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .loading-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+      }
+    }
+  }
+
+  // Spinner avec overlay
+  &.spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .spinner-content {
+      .spinner-wrapper {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        min-width: 300px;
+
+        .loading-message {
+          margin-top: 1.5rem;
+          
+          p {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+          }
+
+          small {
+            font-size: 0.875rem;
+            color: #7f8c8d;
+          }
+        }
+
+        .progress-wrapper {
+          margin-top: 1.5rem;
+          width: 100%;
+
+          .progress {
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+
+            .progress-bar {
+              background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+              border-radius: 4px;
+              font-size: 0.75rem;
+              color: white;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              transition: width 0.3s ease;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Spinner principal
+  .spinner {
+    display: inline-block;
+    position: relative;
+
+    // Type par défaut (3 anneaux rotatifs)
+    &.default {
+      .spinner-ring {
+        position: absolute;
+        border: 3px solid transparent;
+        border-top: 3px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1.2s linear infinite;
+
+        &:nth-child(1) {
+          width: 40px;
+          height: 40px;
+          animation-delay: 0s;
+        }
+
+        &:nth-child(2) {
+          width: 30px;
+          height: 30px;
+          top: 5px;
+          left: 5px;
+          animation-delay: 0.2s;
+        }
+
+        &:nth-child(3) {
+          width: 20px;
+          height: 20px;
+          top: 10px;
+          left: 10px;
+          animation-delay: 0.4s;
+        }
+      }
+    }
+
+    // Type pulse
+    &.pulse {
+      width: 40px;
+      height: 40px;
+      background: #667eea;
+      border-radius: 50%;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+
+    // Type wave
+    &.wave {
+      display: flex;
+      gap: 4px;
+
+      .spinner-ring {
+        width: 4px;
+        height: 20px;
+        background: #667eea;
+        border-radius: 2px;
+        animation: wave 1.2s ease-in-out infinite;
+
+        &:nth-child(1) { animation-delay: 0s; }
+        &:nth-child(2) { animation-delay: 0.1s; }
+        &:nth-child(3) { animation-delay: 0.2s; }
+      }
+    }
+
+    // Type dots
+    &.dots {
+      display: flex;
+      gap: 6px;
+
+      .spinner-ring {
+        width: 8px;
+        height: 8px;
+        background: #667eea;
+        border-radius: 50%;
+        animation: dots 1.4s ease-in-out infinite;
+
+        &:nth-child(1) { animation-delay: 0s; }
+        &:nth-child(2) { animation-delay: 0.2s; }
+        &:nth-child(3) { animation-delay: 0.4s; }
+      }
+    }
+
+    // Type bars
+    &.bars {
+      display: flex;
+      gap: 3px;
+
+      .spinner-ring {
+        width: 4px;
+        height: 20px;
+        background: #667eea;
+        border-radius: 2px;
+        animation: bars 1.2s ease-in-out infinite;
+
+        &:nth-child(1) { animation-delay: 0s; }
+        &:nth-child(2) { animation-delay: 0.1s; }
+        &:nth-child(3) { animation-delay: 0.2s; }
+      }
+    }
+  }
+
+  // Tailles
+  &.spinner-sm .spinner {
+    transform: scale(0.6);
+  }
+
+  &.spinner-md .spinner {
+    transform: scale(1);
+  }
+
+  &.spinner-lg .spinner {
+    transform: scale(1.5);
+  }
+
+  &.spinner-xl .spinner {
+    transform: scale(2);
+  }
+
+  // Animations
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { 
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% { 
+      transform: scale(1.1);
+      opacity: 0.7;
+    }
+  }
+
+  @keyframes wave {
+    0%, 40%, 100% { 
+      transform: scaleY(1);
+    }
+    20% { 
+      transform: scaleY(2);
+    }
+  }
+
+  @keyframes dots {
+    0%, 80%, 100% { 
+      transform: scale(0);
+      opacity: 0.5;
+    }
+    40% { 
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes bars {
+    0%, 40%, 100% { 
+      transform: scaleY(1);
+    }
+    20% { 
+      transform: scaleY(2);
+    }
+  }
+
+  // Mode sombre
+  @media (prefers-color-scheme: dark) {
+    &.spinner-overlay {
+      .spinner-content .spinner-wrapper {
+        background: rgba(55, 65, 81, 0.95);
+        color: white;
+
+        .loading-message {
+          p {
+            color: white;
+          }
+
+          small {
+            color: rgba(255, 255, 255, 0.7);
+          }
+        }
+      }
+    }
+  }
+
+  // Responsive
+  @media (max-width: 576px) {
+    &.spinner-overlay {
+      .spinner-content .spinner-wrapper {
+        margin: 1rem;
+        padding: 1.5rem;
+        min-width: auto;
+      }
+    }
+  }
+
+  // Animation d'apparition
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+

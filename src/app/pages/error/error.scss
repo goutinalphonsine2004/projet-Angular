@@ -1,0 +1,716 @@
+// Variables
+$primary-color: #007bff;
+$success-color: #28a745;
+$warning-color: #ffc107;
+$danger-color: #dc3545;
+$info-color: #17a2b8;
+$light-color: #f8f9fa;
+$dark-color: #343a40;
+$border-radius: 0.5rem;
+$box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+$transition: all 0.3s ease;
+
+// Mixins
+@mixin card-hover {
+  transition: $transition;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+}
+
+@mixin responsive-grid($breakpoint) {
+  @media (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+// Styles principaux
+.error-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding-bottom: 2rem;
+
+  // Header Section
+  .header-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
+
+    .page-title {
+      color: $dark-color;
+      font-weight: 700;
+      margin: 0;
+      font-size: 2.5rem;
+      
+      i {
+        color: $danger-color;
+        margin-right: 0.5rem;
+      }
+    }
+
+    .subtitle {
+      color: #6c757d;
+      margin: 0.5rem 0 0 0;
+      font-size: 1.1rem;
+    }
+
+    .navigation-buttons {
+      .btn {
+        border-radius: $border-radius;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        transition: $transition;
+        
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: $box-shadow;
+        }
+      }
+    }
+  }
+
+  // Main Content
+  .main-content {
+    .container {
+      max-width: 1200px;
+    }
+  }
+
+  // Error Display
+  .error-display {
+    margin-bottom: 3rem;
+  }
+
+  // Error Card
+  .error-card {
+    @include card-hover;
+    
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: none;
+
+    .error-header {
+      text-align: center;
+      margin-bottom: 2rem;
+
+      .error-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        
+        i {
+          display: block;
+        }
+      }
+
+      .error-title {
+        color: $dark-color;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        font-size: 2rem;
+      }
+
+      .error-code {
+        color: #6c757d;
+        font-size: 1.1rem;
+        font-weight: 500;
+        background: rgba(0, 0, 0, 0.05);
+        padding: 0.5rem 1rem;
+        border-radius: $border-radius;
+        display: inline-block;
+      }
+    }
+
+    .error-content {
+      text-align: center;
+      margin-bottom: 2rem;
+
+      .error-message {
+        color: $dark-color;
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+      }
+
+      .error-details {
+        color: #6c757d;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+
+      .help-message {
+        background: rgba(255, 193, 7, 0.1);
+        border: 1px solid rgba(255, 193, 7, 0.3);
+        border-radius: $border-radius;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        i {
+          margin-right: 0.5rem;
+          font-size: 1.2rem;
+        }
+        
+        span {
+          color: #856404;
+          font-weight: 500;
+        }
+      }
+
+      .suggestions {
+        text-align: left;
+        background: rgba(0, 123, 255, 0.05);
+        border: 1px solid rgba(0, 123, 255, 0.2);
+        border-radius: $border-radius;
+        padding: 1.5rem;
+        
+        h5 {
+          color: $primary-color;
+          margin-bottom: 1rem;
+          font-weight: 600;
+        }
+        
+        .suggestions-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          
+          li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: $border-radius;
+            
+            &:last-child {
+              margin-bottom: 0;
+            }
+            
+            i {
+              margin-right: 0.75rem;
+              font-size: 1.1rem;
+            }
+            
+            color: $dark-color;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+
+    .error-actions {
+      .btn {
+        border-radius: $border-radius;
+        font-weight: 500;
+        padding: 0.75rem 1.5rem;
+        transition: $transition;
+        
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: $box-shadow;
+        }
+        
+        i {
+          margin-right: 0.5rem;
+        }
+      }
+    }
+  }
+
+  // Help Section
+  .help-section {
+    margin-bottom: 2rem;
+    
+    .card {
+      border: none;
+      border-radius: $border-radius;
+      box-shadow: $box-shadow;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      
+      .card-header {
+        background: linear-gradient(135deg, $info-color, darken($info-color, 10%));
+        color: white;
+        border: none;
+        border-radius: $border-radius $border-radius 0 0;
+        padding: 1rem 1.5rem;
+        
+        h5 {
+          margin: 0;
+          font-weight: 600;
+          
+          i {
+            margin-right: 0.5rem;
+          }
+        }
+      }
+      
+      .card-body {
+        padding: 1.5rem;
+        
+        p {
+          color: #6c757d;
+          margin-bottom: 1.5rem;
+        }
+        
+        .help-option {
+          display: flex;
+          align-items: center;
+          padding: 1rem;
+          background: rgba(0, 0, 0, 0.02);
+          border-radius: $border-radius;
+          border: 1px solid rgba(0, 0, 0, 0.05);
+          transition: $transition;
+          
+          &:hover {
+            background: rgba(0, 0, 0, 0.05);
+            transform: translateY(-1px);
+          }
+          
+          i {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            width: 24px;
+            text-align: center;
+          }
+          
+          div {
+            h6 {
+              margin: 0 0 0.25rem 0;
+              color: $dark-color;
+              font-weight: 600;
+            }
+            
+            small {
+              color: #6c757d;
+              font-size: 0.875rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Error Type Specific Information
+  .error-info {
+    margin-bottom: 2rem;
+    
+    .card {
+      border: none;
+      border-radius: $border-radius;
+      box-shadow: $box-shadow;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      
+      .card-body {
+        padding: 2rem;
+        text-align: center;
+        
+        .display-1 {
+          font-size: 4rem;
+          margin-bottom: 1rem;
+        }
+        
+        h4 {
+          color: $dark-color;
+          font-weight: 600;
+          margin-bottom: 1rem;
+        }
+        
+        p {
+          color: #6c757d;
+          margin-bottom: 1.5rem;
+          line-height: 1.6;
+        }
+        
+        .btn {
+          border-radius: $border-radius;
+          font-weight: 500;
+          padding: 0.75rem 1.5rem;
+          margin: 0 0.5rem;
+          transition: $transition;
+          
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: $box-shadow;
+          }
+          
+          i {
+            margin-right: 0.5rem;
+          }
+        }
+      }
+    }
+  }
+
+  // Footer Actions
+  .footer-actions {
+    .text-muted {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .btn-group {
+      .btn {
+        border-radius: $border-radius;
+        font-weight: 500;
+        padding: 0.75rem 1.5rem;
+        transition: $transition;
+        
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: $box-shadow;
+        }
+        
+        i {
+          margin-right: 0.5rem;
+        }
+      }
+    }
+  }
+
+  // Error Type Specific Styles
+  &.error-404 {
+    .error-card .error-header .error-icon {
+      color: $info-color;
+    }
+  }
+  
+  &.error-500 {
+    .error-card .error-header .error-icon {
+      color: $danger-color;
+    }
+  }
+  
+  &.error-403 {
+    .error-card .error-header .error-icon {
+      color: $warning-color;
+    }
+  }
+  
+  &.error-401 {
+    .error-card .error-header .error-icon {
+      color: $warning-color;
+    }
+  }
+  
+  &.error-network {
+    .error-card .error-header .error-icon {
+      color: $danger-color;
+    }
+  }
+  
+  &.error-api {
+    .error-card .error-header .error-icon {
+      color: $warning-color;
+    }
+  }
+  
+  &.error-geolocation {
+    .error-card .error-header .error-icon {
+      color: $info-color;
+    }
+  }
+  
+  &.error-generic {
+    .error-card .error-header .error-icon {
+      color: #6c757d;
+    }
+  }
+
+  // Responsive Design
+  @include responsive-grid(1200px) {
+    .error-card {
+      padding: 1.5rem;
+    }
+    
+    .help-section .card-body {
+      padding: 1.25rem;
+    }
+  }
+
+  @include responsive-grid(992px) {
+    .header-section {
+      .page-title {
+        font-size: 2rem;
+      }
+      
+      .navigation-buttons {
+        margin-top: 1rem;
+        text-align: left;
+      }
+    }
+    
+    .error-card .error-header .error-icon {
+      font-size: 3rem;
+    }
+    
+    .error-card .error-header .error-title {
+      font-size: 1.75rem;
+    }
+  }
+
+  @include responsive-grid(768px) {
+    .header-section {
+      padding: 1rem 0;
+      
+      .page-title {
+        font-size: 1.75rem;
+        text-align: center;
+      }
+      
+      .subtitle {
+        text-align: center;
+      }
+    }
+    
+    .navigation-buttons {
+      text-align: center;
+      
+      .btn {
+        margin-bottom: 0.5rem;
+        width: 100%;
+      }
+    }
+    
+    .error-card {
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      
+      .error-header {
+        margin-bottom: 1.5rem;
+        
+        .error-icon {
+          font-size: 2.5rem;
+        }
+        
+        .error-title {
+          font-size: 1.5rem;
+        }
+      }
+    }
+    
+    .error-actions .row .col-6 {
+      margin-bottom: 0.5rem;
+    }
+    
+    .help-section .card-body {
+      padding: 1rem;
+      
+      .help-option {
+        padding: 0.75rem;
+        
+        i {
+          font-size: 1.25rem;
+          margin-right: 0.75rem;
+        }
+      }
+    }
+    
+    .error-info .card .card-body {
+      padding: 1.5rem;
+      
+      .display-1 {
+        font-size: 3rem;
+      }
+      
+      h4 {
+        font-size: 1.5rem;
+      }
+    }
+    
+    .footer-actions .btn-group {
+      flex-direction: column;
+      
+      .btn {
+        border-radius: $border-radius !important;
+        margin-bottom: 0.5rem;
+        width: 100%;
+      }
+    }
+  }
+
+  @include responsive-grid(576px) {
+    .header-section .page-title {
+      font-size: 1.5rem;
+    }
+    
+    .error-card {
+      padding: 1rem;
+      
+      .error-header {
+        .error-icon {
+          font-size: 2rem;
+        }
+        
+        .error-title {
+          font-size: 1.25rem;
+        }
+        
+        .error-code {
+          font-size: 1rem;
+          padding: 0.4rem 0.8rem;
+        }
+      }
+      
+      .error-content {
+        .error-message {
+          font-size: 1.1rem;
+        }
+        
+        .error-details {
+          font-size: 0.9rem;
+        }
+      }
+    }
+    
+    .suggestions {
+      padding: 1rem;
+      
+      .suggestions-list li {
+        padding: 0.4rem;
+        font-size: 0.9rem;
+      }
+    }
+    
+    .help-section .card-body .help-option {
+      padding: 0.5rem;
+      
+      i {
+        font-size: 1.1rem;
+        margin-right: 0.5rem;
+      }
+      
+      div h6 {
+        font-size: 0.9rem;
+      }
+      
+      div small {
+        font-size: 0.8rem;
+      }
+    }
+    
+    .error-info .card .card-body {
+      padding: 1.25rem;
+      
+      .display-1 {
+        font-size: 2.5rem;
+      }
+      
+      h4 {
+        font-size: 1.25rem;
+      }
+      
+      p {
+        font-size: 0.9rem;
+      }
+      
+      .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+        margin: 0.25rem;
+      }
+    }
+  }
+
+  // Dark mode support
+  @media (prefers-color-scheme: dark) {
+    .header-section {
+      background: rgba(52, 58, 64, 0.95);
+      
+      .page-title {
+        color: white;
+      }
+      
+      .subtitle {
+        color: #adb5bd;
+      }
+    }
+    
+    .error-card,
+    .help-section .card,
+    .error-info .card {
+      background: rgba(52, 58, 64, 0.95);
+      color: white;
+    }
+    
+    .error-title {
+      color: white;
+    }
+    
+    .error-message {
+      color: white;
+    }
+    
+    .suggestions-list li {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+    
+    .help-option {
+      background: rgba(255, 255, 255, 0.1);
+      
+      div h6 {
+        color: white;
+      }
+      
+      div small {
+        color: #adb5bd;
+      }
+    }
+  }
+
+  // Animations
+  .error-card,
+  .help-section,
+  .error-info {
+    animation: fadeInUp 0.6s ease-out;
+    
+    @for $i from 1 through 5 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i * 0.1}s;
+      }
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  // Custom scrollbar
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: $primary-color;
+    border-radius: 4px;
+    
+    &:hover {
+      background: darken($primary-color, 10%);
+    }
+  }
+}

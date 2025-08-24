@@ -1,0 +1,45 @@
+<div class="error-alert" *ngIf="error" [ngClass]="{
+  'alert-dismissible': dismissible,
+  'alert-animated': animated
+}">
+  <div class="alert" [ngClass]="getAlertClass()" role="alert">
+    <!-- Icône selon le type d'erreur -->
+    <div class="alert-icon me-2">
+      <i [class]="getIconClass()"></i>
+    </div>
+    
+    <!-- Contenu de l'alerte -->
+    <div class="alert-content">
+      <h6 class="alert-heading mb-1" *ngIf="error.title">{{ error.title }}</h6>
+      <p class="alert-message mb-2">{{ error.message }}</p>
+      
+      <!-- Détails de l'erreur -->
+      <div class="alert-details" *ngIf="error.details">
+        <small class="text-muted">{{ error.details }}</small>
+      </div>
+      
+      <!-- Actions -->
+      <div class="alert-actions mt-2" *ngIf="error.action">
+        <button 
+          type="button" 
+          class="btn btn-sm"
+          [ngClass]="getActionButtonClass()"
+          (click)="onActionClick()">
+          <i class="fas fa-sync-alt me-1" *ngIf="error.action === 'Réessayer'"></i>
+          <i class="fas fa-exclamation-triangle me-1" *ngIf="error.action === 'Voir détails'"></i>
+          <i class="fas fa-times me-1" *ngIf="error.action === 'Fermer'"></i>
+          {{ error.action }}
+        </button>
+      </div>
+    </div>
+    
+    <!-- Bouton de fermeture -->
+    <button 
+      type="button" 
+      class="btn-close" 
+      *ngIf="dismissible"
+      (click)="dismiss()"
+      aria-label="Fermer">
+    </button>
+  </div>
+</div>

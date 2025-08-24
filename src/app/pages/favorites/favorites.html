@@ -1,0 +1,470 @@
+<div class="favorites-container">
+  <!-- Header avec navigation -->
+
+
+    <style>
+    /* Correction pour rendre les textes visibles sur les boutons outline */
+    .btn-outline-primary,
+    .btn-outline-info,
+    .btn-outline-success,
+    .btn-outline-warning,
+    .btn-outline-secondary,
+    .btn-outline-danger {
+      color: #000 !important; /* Texte noir par défaut */
+      border-width: 1px;
+    }
+
+    .btn-outline-primary:hover,
+    .btn-outline-info:hover,
+    .btn-outline-success:hover,
+    .btn-outline-warning:hover,
+    .btn-outline-secondary:hover,
+    .btn-outline-danger:hover {
+      color: #fff !important; /* Texte blanc au survol */
+    }
+
+    /* Pour les boutons dans les groupes d'action */
+    .btn-group .btn i {
+      margin-right: 0.25rem;
+    }
+
+    /* Optionnel : forcer les icônes à ne pas masquer les textes */
+    .btn i + span {
+      margin-left: 0.25rem;
+    }
+  </style>
+  <div class="header-section">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <h1 class="page-title">
+            <i class="bi bi-heart"></i>
+            Favoris & Historique
+          </h1>
+          <p class="subtitle">
+            Gérez vos villes favorites et consultez votre historique de recherche
+          </p>
+        </div>
+        <div class="col-md-6 text-end">
+          <div class="navigation-buttons">
+            <button class="btn btn-outline-primary me-2" (click)="navigateToHome()">
+              <i class="bi bi-house"></i> Accueil
+            </button>
+                                        <button class="btn btn-outline-info me-2" (click)="navigateToForecast24h()">
+              <i class="bi bi-clock-history"></i> 24h
+            </button>
+            <button class="btn btn-outline-success me-2" (click)="navigateToForecast7days()">
+              <i class="bi bi-calendar-week"></i> 7 jours
+            </button>
+            <button class="btn btn-outline-warning" (click)="navigateToMap()">
+              <i class="bi bi-geo-alt"></i> Carte
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gestion des erreurs -->
+  <app-error-alert 
+    *ngIf="errorMessage"
+    [error]="errorMessage"
+    (actionClick)="onErrorAction(errorMessage)">
+  </app-error-alert>
+
+  <!-- Contenu principal -->
+  <div class="main-content">
+    <div class="container">
+      <!-- Barre de recherche et filtres -->
+      <div class="search-filters-section mb-4">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="search-container">
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-search"></i>
+                </span>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  placeholder="Rechercher une ville..."
+                  [(ngModel)]="searchTerm">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 text-end">
+            <div class="filter-controls">
+              <div class="btn-group me-3" role="group">
+                <button 
+                  type="button" 
+                  class="btn btn-outline-secondary"
+                  [class.active]="sortBy === 'name'"
+                  (click)="changeSort('name')">
+                  <i class="bi bi-sort-alpha-down" *ngIf="sortBy === 'name' && sortOrder === 'asc'"></i>
+                  <i class="bi bi-sort-alpha-up" *ngIf="sortBy === 'name' && sortOrder === 'desc'"></i>
+                  <i class="bi bi-sort-alpha-down" *ngIf="sortBy !== 'name'"></i>
+                  Nom
+                </button>
+                <button 
+                  type="button" 
+                  class="btn btn-outline-secondary"
+                  [class.active]="sortBy === 'date'"
+                  (click)="changeSort('date')">
+                  <i class="bi bi-sort-numeric-down" *ngIf="sortBy === 'date' && sortOrder === 'asc'"></i>
+                  <i class="bi bi-sort-numeric-up" *ngIf="sortBy === 'date' && sortOrder === 'desc'"></i>
+                  <i class="bi bi-sort-numeric-down" *ngIf="sortBy !== 'date'"></i>
+                  Date
+                </button>
+                <button 
+                  type="button" 
+                  class="btn btn-outline-secondary"
+                  [class.active]="sortBy === 'temperature'"
+                  (click)="changeSort('temperature')">
+                  <i class="bi bi-thermometer-half"></i>
+                  Température
+                </button>
+              </div>
+              
+              <button 
+                class="btn btn-outline-info me-2"
+                (click)="refreshAllWeather()"
+                [disabled]="isLoading">
+                <i class="bi bi-arrow-clockwise" [class.bi-spin]="isLoading"></i>
+                Actualiser
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Onglets -->
+      <div class="tabs-section mb-4">
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button 
+              class="nav-link" 
+              [class.active]="activeTab === 'favorites'"
+              (click)="setActiveTab('favorites')"
+              type="button">
+              <i class="bi bi-heart-fill"></i>
+              Favoris 
+              <span class="badge bg-primary ms-1">{{ favorites.length }}</span>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button 
+              class="nav-link" 
+              [class.active]="activeTab === 'history'"
+              (click)="setActiveTab('history')"
+              type="button">
+              <i class="bi bi-clock-history"></i>
+              Historique 
+              <span class="badge bg-secondary ms-1">{{ history.length }}</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contenu des onglets -->
+      <div class="tab-content">
+        <!-- Onglet Favoris -->
+        <div class="tab-pane" [class.active]="activeTab === 'favorites'">
+          <div class="favorites-header mb-3">
+            <div class="row align-items-center">
+              <div class="col-md-6">
+                <h3>
+                  <i class="bi bi-heart-fill text-danger"></i>
+                  Mes villes favorites
+                </h3>
+              </div>
+              <div class="col-md-6 text-end">
+                <button 
+                  class="btn btn-outline-danger"
+                  (click)="clearAllFavorites()"
+                  [disabled]="favorites.length === 0">
+                  <i class="bi bi-trash"></i>
+                  Vider tous les favoris
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading spinner pour favoris -->
+          <div *ngIf="isLoadingFavorites" class="text-center py-5">
+            <app-loading-spinner></app-loading-spinner>
+            <p class="mt-3 text-muted">Chargement des favoris...</p>
+          </div>
+
+          <!-- Liste des favoris -->
+          <div *ngIf="!isLoadingFavorites" class="favorites-list">
+            <div *ngIf="getFilteredItems().length === 0" class="no-items">
+              <div class="text-center py-5">
+                <i class="bi bi-heart display-1 text-muted"></i>
+                <h3 class="mt-3">Aucun favori</h3>
+                <p class="text-muted">
+                  {{ searchTerm ? 'Aucune ville ne correspond à votre recherche.' : 'Vous n\'avez pas encore de villes favorites.' }}
+                </p>
+                <button class="btn btn-primary" (click)="navigateToHome()">
+                  <i class="bi bi-house"></i> Retour à l'accueil
+                </button>
+              </div>
+            </div>
+
+            <div class="row g-3" *ngIf="getFilteredItems().length > 0">
+              <div class="col-lg-4 col-md-6" *ngFor="let favorite of getFilteredItems()">
+                <div class="favorite-card">
+                  <div class="card h-100">
+                    <div class="card-header">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">{{ favorite.city.name }}</h5>
+                        <button 
+                          class="btn btn-sm btn-outline-danger"
+                          (click)="removeFavorite(favorite)"
+                          title="Supprimer des favoris">
+                          <i class="bi bi-heart-break"></i>
+                        </button>
+                      </div>
+                      <small class="text-muted" *ngIf="favorite.city.country">
+                        {{ favorite.city.country }}
+                      </small>
+                    </div>
+                    
+                    <div class="card-body">
+                      <!-- Météo actuelle -->
+                      <div *ngIf="getWeatherForCity(favorite.city.name)" class="weather-info">
+                        <div class="weather-icon text-center mb-3">
+                          <img                   [src]="getWeatherIcon((getWeatherForCity(favorite.city.name)?.weather?.[0]?.icon) || '')"
+                  [alt]="(getWeatherForCity(favorite.city.name)?.weather?.[0]?.description) || 'Météo'"
+                               class="weather-icon-img">
+                          <p class="weather-description">
+                            {{ (getWeatherForCity(favorite.city.name)?.weather?.[0]?.description) || 'N/A' }}
+                          </p>
+                        </div>
+                        
+                        <div class="temperature text-center mb-3">
+                          <span class="temp-value" [class]="getTemperatureClass((getWeatherForCity(favorite.city.name)?.main?.temp) || 0)">
+                            {{ (getWeatherForCity(favorite.city.name)?.main?.temp) | number:'1.0-0' }}°C
+                          </span>
+                        </div>
+                        
+                        <div class="weather-details">
+                          <div class="detail-row">
+                            <span class="detail-label">
+                              <i class="bi bi-droplet"></i> Humidité:
+                            </span>
+                            <span>{{ (getWeatherForCity(favorite.city.name)?.main?.humidity) || 'N/A' }}%</span>
+                          </div>
+                          <div class="detail-row">
+                            <span class="detail-label">
+                              <i class="bi bi-wind"></i> Vent:
+                            </span>
+                            <span>{{ (getWeatherForCity(favorite.city.name)?.wind?.speed) | number:'1.0-0' }} km/h</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- Pas de météo -->
+                      <div *ngIf="!getWeatherForCity(favorite.city.name)" class="no-weather">
+                        <div class="text-center py-3">
+                          <i class="bi bi-cloud-slash text-muted"></i>
+                          <p class="text-muted mt-2">Météo non disponible</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                      <div class="last-visited mb-2">
+                        <small class="text-muted">
+                          <i class="bi bi-clock"></i>
+                          {{ formatLastVisited(favorite.lastVisited) }}
+                        </small>
+                      </div>
+                      
+                      <div class="action-buttons">
+                        <div class="btn-group w-100" role="group">
+                          <button 
+                            class="btn btn-sm btn-outline-primary"
+                            (click)="onCityClick(favorite.city)"
+                            title="Voir détails">
+                            <i class="bi bi-info-circle"></i>
+                          </button>
+                          <button 
+                            class="btn btn-sm btn-outline-info"
+                            (click)="navigateToForecast24h(favorite.city)"
+                            title="Prévisions 24h">
+                            <i class="bi bi-clock-history"></i>
+                          </button>
+                          <button 
+                            class="btn btn-sm btn-outline-success"
+                            (click)="navigateToForecast7days(favorite.city)"
+                            title="Prévisions 7 jours">
+                            <i class="bi bi-calendar-week"></i>
+                          </button>
+                          <button 
+                            class="btn btn-sm btn-outline-warning"
+                            (click)="navigateToMap(favorite.city)"
+                            title="Voir sur la carte">
+                            <i class="bi bi-geo-alt"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Onglet Historique -->
+        <div class="tab-pane" [class.active]="activeTab === 'history'">
+          <div class="history-header mb-3">
+            <div class="row align-items-center">
+              <div class="col-md-6">
+                <h3>
+                  <i class="bi bi-clock-history text-info"></i>
+                  Historique des recherches
+                </h3>
+              </div>
+              <div class="col-md-6 text-end">
+                <button 
+                  class="btn btn-outline-secondary"
+                  (click)="clearAllHistory()"
+                  [disabled]="history.length === 0">
+                  <i class="bi bi-trash"></i>
+                  Vider l'historique
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading spinner pour historique -->
+          <div *ngIf="isLoadingHistory" class="text-center py-5">
+            <app-loading-spinner></app-loading-spinner>
+            <p class="mt-3 text-muted">Chargement de l'historique...</p>
+          </div>
+
+          <!-- Liste de l'historique -->
+          <div *ngIf="!isLoadingHistory" class="history-list">
+            <div *ngIf="getFilteredItems().length === 0" class="no-items">
+              <div class="text-center py-5">
+                <i class="bi bi-clock-history display-1 text-muted"></i>
+                <h3 class="mt-3">Historique vide</h3>
+                <p class="text-muted">
+                  {{ searchTerm ? 'Aucune ville ne correspond à votre recherche.' : 'Aucune recherche effectuée récemment.' }}
+                </p>
+                <button class="btn btn-primary" (click)="navigateToHome()">
+                  <i class="bi bi-house"></i> Retour à l'accueil
+                </button>
+              </div>
+            </div>
+
+            <div class="row g-3" *ngIf="getFilteredItems().length > 0">
+              <div class="col-lg-4 col-md-6" *ngFor="let historyItem of getFilteredItems()">
+                <div class="history-card">
+                  <div class="card h-100">
+                    <div class="card-header">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">{{ historyItem.city.name }}</h5>
+                        <button 
+                          class="btn btn-sm btn-outline-secondary"
+                          (click)="removeHistoryItem(historyItem)"
+                          title="Supprimer de l'historique">
+                          <i class="bi bi-x-circle"></i>
+                        </button>
+                      </div>
+                      <small class="text-muted" *ngIf="historyItem.city.country">
+                        {{ historyItem.city.country }}
+                      </small>
+                    </div>
+                    
+                    <div class="card-body">
+                      <!-- Météo actuelle -->
+                      <div *ngIf="getWeatherForCity(historyItem.city.name)" class="weather-info">
+                        <div class="weather-icon text-center mb-3">
+                          <img                           [src]="getWeatherIcon((getWeatherForCity(historyItem.city.name)?.weather?.[0]?.icon) || '')"
+                          [alt]="(getWeatherForCity(historyItem.city.name)?.weather?.[0]?.description) || 'Météo'"
+                               class="weather-icon-img">
+                          <p class="weather-description">
+                            {{ (getWeatherForCity(historyItem.city.name)?.weather?.[0]?.description) || 'N/A' }}
+                          </p>
+                        </div>
+                        
+                        <div class="temperature text-center mb-3">
+                          <span class="temp-value" [class]="getTemperatureClass((getWeatherForCity(historyItem.city.name)?.main?.temp) || 0)">
+                            {{ (getWeatherForCity(historyItem.city.name)?.main?.temp) | number:'1.0-0' }}°C
+                          </span>
+                        </div>
+                        
+                        <div class="weather-details">
+                          <div class="detail-row">
+                            <span class="detail-label">
+                              <i class="bi bi-droplet"></i> Humidité:
+                            </span>
+                            <span>{{ (getWeatherForCity(historyItem.city.name)?.main?.humidity) || 'N/A' }}%</span>
+                          </div>
+                          <div class="detail-row">
+                            <span class="detail-label">
+                              <i class="bi bi-wind"></i> Vent:
+                            </span>
+                            <span>{{ (getWeatherForCity(historyItem.city.name)?.wind?.speed) | number:'1.0-0' }} km/h</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- Pas de météo -->
+                      <div *ngIf="!getWeatherForCity(historyItem.city.name)" class="no-weather">
+                        <div class="text-center py-3">
+                          <i class="bi bi-cloud-slash text-muted"></i>
+                          <p class="text-muted mt-2">Météo non disponible</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                      <div class="last-visited mb-2">
+                        <small class="text-muted">
+                          <i class="bi bi-clock"></i>
+                          {{ formatLastVisited(historyItem.lastVisited) }}
+                        </small>
+                      </div>
+                      
+                      <div class="action-buttons">
+                        <div class="btn-group w-100" role="group">
+                          <button 
+                            class="btn btn-sm btn-outline-primary"
+                            (click)="onCityClick(historyItem.city)"
+                            title="Voir détails">
+                            <i class="bi bi-info-circle"></i>
+                          </button>
+                          <button 
+                            class="btn btn-sm btn-outline-info"
+                            (click)="navigateToForecast24h(historyItem.city)"
+                            title="Prévisions 24h">
+                            <i class="bi bi-clock-history"></i>
+                          </button>
+                          <button 
+                            class="btn btn-sm btn-outline-success"
+                            (click)="navigateToForecast7days(historyItem.city)"
+                            title="Prévisions 7 jours">
+                            <i class="bi bi-calendar-week"></i>
+                          </button>
+                          <button 
+                            class="btn btn-sm btn-outline-warning"
+                            (click)="navigateToMap(historyItem.city)"
+                            title="Voir sur la carte">
+                            <i class="bi bi-geo-alt"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

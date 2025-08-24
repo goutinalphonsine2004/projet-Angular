@@ -1,0 +1,932 @@
+================================================================================
+                    COURS ANGULAR COMPLET POUR DÉBUTANTS
+                    + EXPLICATION DÉTAILLÉE DU PROJET MÉTÉO
+================================================================================
+
+TABLE DES MATIÈRES
+==================
+1. COURS ANGULAR DE BASE
+   1.1 Qu'est-ce qu'Angular ?
+   1.2 Concepts fondamentaux
+   1.3 Structure d'un projet Angular
+   1.4 Composants
+   1.5 Services
+   1.6 Routing (Navigation)
+   1.7 Modules
+   1.8 Templates et Binding
+   1.9 Directives
+   1.10 Pipes
+
+2. STRUCTURE DU PROJET MÉTÉO
+   2.1 Organisation des dossiers
+   2.2 Fichiers de configuration
+   2.3 Architecture générale
+
+3. EXPLICATION DÉTAILLÉE FICHIER PAR FICHIER
+   3.1 Fichiers de configuration
+   3.2 Composant principal (App)
+   3.3 Modèles de données
+   3.4 Services
+   3.5 Composants météo
+   3.6 Pages de prévisions
+   3.7 Composant de graphique
+   3.8 Styles et CSS
+
+4. CONCLUSION ET OBJECTIFS ATTEINTS
+
+================================================================================
+1. COURS ANGULAR DE BASE
+================================================================================
+
+1.1 QU'EST-CE QU'ANGULAR ?
+============================
+Angular est un framework JavaScript développé par Google pour créer des applications web dynamiques et interactives. C'est un outil moderne qui permet de construire des applications "Single Page Application" (SPA).
+
+Avantages d'Angular :
+- Structure claire et organisée
+- Outils de développement puissants
+- Grande communauté et documentation
+- Performance optimisée
+- Sécurité intégrée
+
+1.2 CONCEPTS FONDAMENTAUX
+==========================
+Angular fonctionne sur plusieurs concepts clés :
+
+a) COMPOSANTS (Components)
+   - Ce sont les blocs de construction de l'interface utilisateur
+   - Chaque composant a : un template HTML, une classe TypeScript, des styles CSS
+   - Exemple : un bouton, une carte, un formulaire
+
+b) SERVICES (Services)
+   - Contiennent la logique métier et les données
+   - Peuvent être partagés entre plusieurs composants
+   - Exemple : service pour récupérer la météo depuis une API
+
+c) MODULES (Modules)
+   - Organisent et regroupent les composants, services et directives
+   - Permettent la réutilisation et la maintenance
+   - Exemple : module pour toutes les fonctionnalités météo
+
+d) ROUTING (Navigation)
+   - Permet de naviguer entre différentes pages sans recharger
+   - Crée une expérience utilisateur fluide
+   - Exemple : aller de la page d'accueil à la page des prévisions
+
+1.3 STRUCTURE D'UN PROJET ANGULAR
+==================================
+Un projet Angular typique contient :
+
+/src/app/          → Code principal de l'application
+/src/assets/       → Images, icônes, fichiers statiques
+/src/environments/ → Configuration pour développement/production
+/src/styles/       → Styles globaux
+/package.json      → Dépendances et scripts
+/angular.json      → Configuration Angular
+/tsconfig.json     → Configuration TypeScript
+
+1.4 COMPOSANTS
+===============
+Un composant Angular est composé de 3 parties :
+
+a) CLASSE TYPESCRIPT (.ts)
+   - Contient la logique et les données
+   - Utilise des décorateurs (@Component)
+   - Gère les événements et la logique métier
+
+b) TEMPLATE HTML (.html)
+   - Définit la structure de l'interface
+   - Utilise la syntaxe Angular ({{ }}, [], (), *ngIf, etc.)
+   - Affiche les données du composant
+
+c) STYLES CSS/SCSS (.scss)
+   - Définit l'apparence du composant
+   - Peut être encapsulé (styles locaux uniquement)
+   - Supporte les variables et mixins SCSS
+
+Exemple de composant simple :
+```typescript
+@Component({
+  selector: 'app-bouton',           // Nom du composant dans le HTML
+  templateUrl: './bouton.html',     // Template HTML
+  styleUrl: './bouton.scss'         // Styles CSS
+})
+export class BoutonComponent {
+  texte = "Cliquez-moi";           // Propriété du composant
+  
+  onClick() {                       // Méthode du composant
+    alert("Bouton cliqué !");
+  }
+}
+```
+
+1.5 SERVICES
+=============
+Les services sont des classes qui contiennent la logique métier :
+
+- Peuvent être injectés dans les composants
+- Partagent des données entre composants
+- Gèrent les appels API et la persistance
+- Sont réutilisables
+
+Exemple de service :
+```typescript
+@Injectable({
+  providedIn: 'root'  // Service disponible globalement
+})
+export class MeteoService {
+  getMeteo(ville: string) {
+    // Logique pour récupérer la météo
+    return this.http.get(`/api/meteo/${ville}`);
+  }
+}
+```
+
+1.6 ROUTING (NAVIGATION)
+==========================
+Le routing permet de naviguer entre les pages :
+
+- Définit les URLs de l'application
+- Charge les composants appropriés
+- Gère les paramètres d'URL
+- Permet la navigation programmatique
+
+Exemple de configuration de routes :
+```typescript
+const routes: Routes = [
+  { path: '', component: AccueilComponent },           // Page d'accueil
+  { path: 'meteo/:ville', component: MeteoComponent }, // Page météo avec paramètre
+  { path: '**', component: NotFoundComponent }         // Page 404
+];
+```
+
+1.7 MODULES
+============
+Les modules organisent l'application :
+
+- NgModule : module principal d'Angular
+- Feature modules : modules pour des fonctionnalités spécifiques
+- Shared modules : modules partagés entre composants
+- Lazy loading : chargement à la demande
+
+1.8 TEMPLATES ET BINDING
+=========================
+Angular offre plusieurs types de binding :
+
+a) INTERPOLATION {{ }}
+   - Affiche des valeurs dans le template
+   - Exemple : {{ nomVille }}
+
+b) PROPERTY BINDING []
+   - Lie une propriété HTML à une valeur
+   - Exemple : [src]="imageUrl"
+
+c) EVENT BINDING ()
+   - Lie un événement à une méthode
+   - Exemple : (click)="onClick()"
+
+d) TWO-WAY BINDING [()]
+   - Synchronise bidirectionnellement les données
+   - Exemple : [(ngModel)]="nom"
+
+1.9 DIRECTIVES
+===============
+Les directives modifient le comportement du DOM :
+
+a) STRUCTURALES (*ngIf, *ngFor, *ngSwitch)
+   - Modifient la structure du DOM
+   - Exemple : *ngFor="let item of items"
+
+b) ATTRIBUTS ([ngClass], [ngStyle])
+   - Modifient l'apparence des éléments
+   - Exemple : [ngClass]="{'actif': isActive}"
+
+1.10 PIPES
+===========
+Les pipes transforment les données d'affichage :
+
+- Formatage des dates, nombres, textes
+- Exemple : {{ date | date:'dd/MM/yyyy' }}
+- Pipes personnalisés possibles
+
+================================================================================
+2. STRUCTURE DU PROJET MÉTÉO
+================================================================================
+
+2.1 ORGANISATION DES DOSSIERS
+==============================
+
+weather-app/
+├── src/
+│   ├── app/                    # Code principal de l'application
+│   │   ├── components/         # Composants réutilisables
+│   │   ├── pages/             # Pages principales
+│   │   ├── services/          # Services métier
+│   │   ├── models/            # Définitions des types
+│   │   └── shared/            # Éléments partagés
+│   ├── assets/                # Ressources statiques
+│   ├── environments/          # Configuration par environnement
+│   └── styles/                # Styles globaux
+├── package.json               # Dépendances npm
+├── angular.json              # Configuration Angular
+└── tsconfig.json             # Configuration TypeScript
+
+2.2 FICHIERS DE CONFIGURATION
+==============================
+
+a) package.json
+   - Liste toutes les dépendances
+   - Définit les scripts de build et développement
+   - Version de l'application
+
+b) angular.json
+   - Configuration spécifique à Angular
+   - Définit les assets, styles, scripts
+   - Configuration de build et serve
+
+c) tsconfig.json
+   - Configuration TypeScript
+   - Options de compilation
+   - Règles strictes
+
+2.3 ARCHITECTURE GÉNÉRALE
+===========================
+L'application suit le pattern MVC (Model-View-Controller) :
+
+- MODELS : Définissent la structure des données météo
+- VIEWS : Composants qui affichent l'interface
+- CONTROLLERS : Services qui gèrent la logique métier
+
+================================================================================
+3. EXPLICATION DÉTAILLÉE FICHIER PAR FICHIER
+================================================================================
+
+3.1 FICHIERS DE CONFIGURATION
+==============================
+
+a) package.json
+```json
+{
+  "name": "weather-app",
+  "version": "0.0.0",
+  "dependencies": {
+    "@angular/common": "^20.1.0",        // Module Angular pour fonctionnalités communes
+    "@angular/core": "^20.1.0",          // Cœur d'Angular (composants, services)
+    "@angular/forms": "^20.1.0",         // Gestion des formulaires
+    "@angular/platform-browser": "^20.1.0", // Support navigateur
+    "@angular/router": "^20.1.0",        // Système de navigation
+    "bootstrap": "^5.3.7",               // Framework CSS pour le design
+    "leaflet": "^1.9.4",                 // Bibliothèque pour les cartes
+    "chart.js": "^4.5.0"                 // Bibliothèque pour les graphiques
+  }
+}
+```
+
+b) angular.json
+```json
+{
+  "projects": {
+    "weather-app": {
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",  // Outil de build
+          "options": {
+            "browser": "src/main.ts",               // Point d'entrée
+            "styles": ["src/styles.scss"],          // Fichiers CSS globaux
+            "assets": [{"glob": "**/*", "input": "public"}] // Ressources
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+3.2 COMPOSANT PRINCIPAL (APP)
+==============================
+
+a) app.ts (Classe principale)
+```typescript
+import { Component, OnInit, HostListener } from '@angular/core';
+
+@Component({
+  selector: 'app-root',           // Nom du composant dans le HTML
+  templateUrl: './app.html',      // Template principal
+  styleUrl: './app.scss'          // Styles principaux
+})
+export class AppComponent implements OnInit {
+  title = 'WeatherApp';           // Titre de l'application
+  isMenuOpen = false;             // État du menu mobile
+  isMobile = false;               // Détection mobile/desktop
+
+  ngOnInit(): void {
+    this.checkScreenSize();        // Vérifier la taille d'écran au démarrage
+  }
+
+  @HostListener('window:resize')  // Écouter le redimensionnement
+  onResize(): void {
+    this.checkScreenSize();        // Recalculer la taille
+  }
+
+  private checkScreenSize(): void {
+    this.isMobile = window.innerWidth < 992;  // Seuil mobile : 992px
+    
+    // Sur desktop, le menu est toujours ouvert
+    if (!this.isMobile) {
+      this.isMenuOpen = true;
+    }
+  }
+
+  toggleMenu(): void {
+    // Seulement sur mobile
+    if (this.isMobile) {
+      this.isMenuOpen = !this.isMenuOpen;
+    }
+  }
+}
+```
+
+POURQUOI CETTE LOGIQUE ?
+- Détection automatique mobile/desktop
+- Menu toujours visible sur desktop (meilleure UX)
+- Menu hamburger seulement sur mobile
+- Gestion responsive intelligente
+
+b) app.html (Template principal)
+```html
+<div class="weather-app-container">
+  <!-- Navigation Bootstrap -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+      <!-- Logo de l'application -->
+      <a class="navbar-brand fw-bold" routerLink="/home" (click)="closeMenu()">
+        🌤️ WeatherApp
+      </a>
+      
+      <!-- Bouton hamburger pour mobile -->
+      <button class="navbar-toggler" type="button" (click)="toggleMenu()" 
+              [class.collapsed]="!isMenuOpen">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <!-- Menu de navigation -->
+      <div class="navbar-collapse" [class.show]="isMenuOpen || !isMobile" 
+           [class.collapse]="isMobile && !isMenuOpen">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/home" routerLinkActive="active" 
+               (click)="closeMenu()">Accueil</a>
+          </li>
+          <!-- Autres liens de navigation -->
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contenu principal avec padding pour la navbar fixe -->
+  <main class="container-fluid" style="padding-top: 80px;">
+    <router-outlet></router-outlet>  <!-- Ici s'affichent les pages -->
+  </main>
+</div>
+```
+
+EXPLICATION DES ATTRIBUTS :
+- routerLink="/home" : Lien de navigation Angular
+- routerLinkActive="active" : Classe CSS active quand la route est active
+- (click)="closeMenu()" : Appel de méthode au clic
+- [class.show]="isMenuOpen || !isMobile" : Classe conditionnelle
+- <router-outlet> : Zone où s'affichent les pages
+
+3.3 MODÈLES DE DONNÉES
+========================
+
+a) weather.model.ts
+```typescript
+// Interface pour une ville
+export interface City {
+  name: string;        // Nom de la ville
+  lat: number;         // Latitude
+  lon: number;         // Longitude
+  country: string;     // Pays
+  state?: string;      // État/Région (optionnel)
+}
+
+// Interface pour la météo actuelle
+export interface CurrentWeather {
+  coord: {             // Coordonnées géographiques
+    lat: number;
+    lon: number;
+  };
+  weather: Array<{     // Conditions météo
+    id: number;
+    main: string;
+    description: string;
+    icon: string;
+  }>;
+  main: {              // Données principales
+    temp: number;      // Température en °C
+    feels_like: number; // Température ressentie
+    pressure: number;  // Pression en hPa
+    humidity: number;  // Humidité en %
+  };
+  wind: {              // Données du vent
+    speed: number;     // Vitesse en km/h
+    deg: number;       // Direction en degrés
+  };
+  visibility: number;  // Visibilité en mètres
+  name: string;        // Nom de la ville
+  sys: {               // Informations système
+    country: string;   // Code pays
+    sunrise: number;   // Lever du soleil (timestamp)
+    sunset: number;    // Coucher du soleil (timestamp)
+  };
+}
+```
+
+POURQUOI CES INTERFACES ?
+- TypeScript : sécurité des types
+- Réutilisabilité : mêmes structures partout
+- Maintenance : modification centralisée
+- Documentation : code auto-documenté
+
+3.4 SERVICES
+=============
+
+a) weather.service.ts
+```typescript
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, catchError, map, throwError } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'  // Service disponible globalement
+})
+export class WeatherService {
+  private readonly apiKey = environment.openWeatherMapApiKey;  // Clé API
+  private readonly baseUrl = environment.openWeatherMapBaseUrl; // URL de base
+
+  constructor(private http: HttpClient) {}  // Injection du service HTTP
+
+  /**
+   * Récupère la météo actuelle d'une ville
+   */
+  getCurrentWeather(city: string): Observable<CurrentWeather> {
+    const params = new HttpParams()           // Paramètres de requête
+      .set('q', city)                         // Nom de la ville
+      .set('appid', this.apiKey)              // Clé API
+      .set('units', 'metric')                 // Unités métriques (°C, km/h)
+      .set('lang', 'fr');                     // Langue française
+
+    return this.http.get<CurrentWeather>(`${this.baseUrl}/weather`, { params })
+      .pipe(
+        catchError(this.handleError)          // Gestion des erreurs
+      );
+  }
+
+  /**
+   * Récupère les prévisions 24h
+   */
+  getForecast24h(lat: number, lon: number): Observable<ForecastResponse> {
+    const params = new HttpParams()
+      .set('lat', lat.toString())             // Latitude
+      .set('lon', lon.toString())             // Longitude
+      .set('appid', this.apiKey)
+      .set('units', 'metric')
+      .set('lang', 'fr')
+      .set('cnt', '8');                       // 8 prévisions = 24h
+
+    return this.http.get<ForecastResponse>(`${this.baseUrl}/forecast`, { params })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  /**
+   * Gestion des erreurs HTTP
+   */
+  private handleError(error: any): Observable<never> {
+    let errorMessage = 'Une erreur est survenue';
+    
+    if (error.status === 401) {
+      errorMessage = 'Clé API invalide. Vérifiez votre configuration.';
+    } else if (error.status === 404) {
+      errorMessage = 'Ville non trouvée. Vérifiez l\'orthographe.';
+    }
+    // ... autres cas d'erreur
+
+    console.error('Erreur API:', error);
+    return throwError(() => new Error(errorMessage));
+  }
+}
+```
+
+EXPLICATION DES CONCEPTS :
+- @Injectable : Décorateur pour créer un service
+- HttpClient : Service Angular pour les requêtes HTTP
+- Observable : Type RxJS pour les données asynchrones
+- HttpParams : Construction sécurisée des paramètres d'URL
+- catchError : Opérateur RxJS pour gérer les erreurs
+
+3.5 COMPOSANTS MÉTÉO
+======================
+
+a) weather-card.component.ts
+```typescript
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CurrentWeather } from '../../models/weather.model';
+
+@Component({
+  selector: 'app-weather-card',
+  templateUrl: './weather-card.html',
+  styleUrl: './weather-card.scss'
+})
+export class WeatherCardComponent {
+  @Input() weather!: CurrentWeather;        // Données météo reçues du parent
+  @Input() isFavorite: boolean = false;     // État favori
+  @Output() favoriteToggle = new EventEmitter<CurrentWeather>(); // Événement vers le parent
+
+  /**
+   * Bascule l'état favori
+   */
+  toggleFavorite(): void {
+    this.favoriteToggle.emit(this.weather);  // Émet l'événement vers le parent
+  }
+
+  /**
+   * Obtient l'icône météo appropriée
+   */
+  getWeatherIcon(iconCode: string): string {
+    return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+  }
+
+  /**
+   * Obtient la classe CSS pour la température
+   */
+  getTemperatureClass(temp: number): string {
+    if (temp < 0) return 'text-primary';      // Bleu pour le froid
+    if (temp < 15) return 'text-info';        // Bleu clair pour le frais
+    if (temp < 25) return 'text-success';     // Vert pour le doux
+    if (temp < 35) return 'text-warning';     // Orange pour le chaud
+    return 'text-danger';                      // Rouge pour le très chaud
+  }
+}
+```
+
+EXPLICATION DES DÉCORATEURS :
+- @Input() : Propriété reçue du composant parent
+- @Output() : Événement émis vers le composant parent
+- EventEmitter : Type pour émettre des événements
+
+b) weather-card.html
+```html
+<div class="weather-card">
+  <div class="card h-100">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="card-title mb-0">{{ weather.name }}</h5>
+      
+      <!-- Bouton favori -->
+      <button class="btn btn-sm" 
+              [class.btn-outline-danger]="!isFavorite"
+              [class.btn-danger]="isFavorite"
+              (click)="toggleFavorite()">
+        <i class="bi" [class.bi-heart]="!isFavorite" [class.bi-heart-fill]="isFavorite"></i>
+      </button>
+    </div>
+    
+    <div class="card-body text-center">
+      <!-- Icône météo -->
+      <div class="weather-icon mb-3">
+        <img [src]="getWeatherIcon(weather.weather[0].icon)" 
+             [alt]="weather.weather[0].description"
+             class="weather-icon-img">
+        <p class="weather-description">{{ weather.weather[0].description }}</p>
+      </div>
+      
+      <!-- Température principale -->
+      <div class="temperature mb-3">
+        <span class="temp-value" [class]="getTemperatureClass(weather.main.temp)">
+          {{ weather.main.temp | number:'1.0-0' }}°C
+        </span>
+        <div class="temp-feels-like">
+          Ressenti: {{ weather.main.feels_like | number:'1.0-0' }}°C
+        </div>
+      </div>
+      
+      <!-- Détails météo -->
+      <div class="weather-details">
+        <div class="detail-item">
+          <i class="bi bi-droplet"></i>
+          <span>{{ weather.main.humidity }}%</span>
+        </div>
+        <div class="detail-item">
+          <i class="bi bi-wind"></i>
+          <span>{{ weather.wind.speed | number:'1.0-0' }} km/h</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+EXPLICATION DES DIRECTIVES :
+- *ngIf : Affichage conditionnel
+- *ngFor : Boucle sur des éléments
+- [class] : Classe CSS conditionnelle
+- (click) : Gestionnaire d'événement
+- {{ }} : Interpolation de données
+- | number : Pipe de formatage
+
+3.6 PAGES DE PRÉVISIONS
+=========================
+
+a) forecast24h.component.ts
+```typescript
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Subject, takeUntil, switchMap, catchError, of } from 'rxjs';
+
+@Component({
+  selector: 'app-forecast24h',
+  templateUrl: './forecast24h.html',
+  styleUrl: './forecast24h.scss'
+})
+export class Forecast24hComponent implements OnInit, OnDestroy {
+  @ViewChild(ForecastChartComponent) chartComponent!: ForecastChartComponent;
+
+  hourlyForecast: ForecastItem[] = [];  // Prévisions horaires
+  city: City | null = null;             // Ville sélectionnée
+  isLoading: boolean = false;            // État de chargement
+  errorMessage: AppError | null = null;  // Message d'erreur
+  
+  private destroy$ = new Subject<void>(); // Pour nettoyer les souscriptions
+
+  ngOnInit(): void {
+    this.setupErrorHandling();           // Configuration de la gestion d'erreurs
+    this.loadForecastFromRoute();        // Chargement des prévisions
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();                // Émettre la valeur de destruction
+    this.destroy$.complete();            // Compléter le Subject
+  }
+
+  /**
+   * Charge les prévisions depuis les paramètres de route
+   */
+  private loadForecastFromRoute(): void {
+    this.route.queryParams.pipe(         // Écouter les paramètres d'URL
+      takeUntil(this.destroy$),          // Se désabonner à la destruction
+      switchMap(params => {              // Transformer les paramètres en requête
+        const lat = parseFloat(params['lat']);
+        const lon = parseFloat(params['lon']);
+        const cityName = params['city'];
+
+        if (!lat || !lon) {
+          throw new Error('Coordonnées manquantes');
+        }
+
+        this.city = {
+          name: cityName || 'Position actuelle',
+          lat,
+          lon,
+          country: params['country'] || ''
+        };
+
+        return this.weatherService.getForecast24h(lat, lon);
+      }),
+      catchError(error => {              // Gestion des erreurs
+        this.errorService.handleApiError(error, 'Chargement prévisions 24h');
+        return of(null);                 // Retourner null en cas d'erreur
+      })
+    ).subscribe(forecast => {            // S'abonner aux résultats
+      if (forecast) {
+        this.hourlyForecast = forecast.list;
+        this.prepareChartData();         // Préparer les données du graphique
+        this.clearError();
+      }
+    });
+  }
+}
+```
+
+EXPLICATION DES CONCEPTS RXJS :
+- Subject : Émetteur/récepteur de valeurs
+- takeUntil : Se désabonne automatiquement
+- switchMap : Annule les requêtes précédentes
+- catchError : Gère les erreurs dans le flux
+- subscribe : S'abonne aux résultats
+
+3.7 COMPOSANT DE GRAPHIQUE
+============================
+
+a) forecast-chart.component.ts
+```typescript
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
+
+// Chart.js types
+declare var Chart: any;
+
+@Component({
+  selector: 'app-forecast-chart',
+  templateUrl: './forecast-chart.html',
+  styleUrl: './forecast-chart.scss'
+})
+export class ForecastChartComponent implements OnInit, OnChanges {
+  @Input() forecastData: ForecastResponse | null = null;  // Données reçues
+  @Input() title: string = 'Prévisions météo';            // Titre du graphique
+  @Input() chartType: 'line' | 'bar' = 'line';           // Type de graphique
+  @Input() period: '24h' | '7days' = '24h';              // Période
+  
+  @ViewChild('chartCanvas', { static: true }) chartCanvas!: ElementRef;
+
+  chart: any = null;                    // Instance Chart.js
+  chartData: any = null;                // Données formatées pour Chart.js
+  chartOptions: any = {};               // Options du graphique
+
+  ngOnInit(): void {
+    this.setupChartOptions();            // Configuration des options
+    this.processData();                  // Traitement des données
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['forecastData'] && !changes['forecastData'].firstChange) {
+      this.processData();                // Retraiter si les données changent
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.chart) {
+      this.chart.destroy();              // Nettoyer le graphique
+    }
+  }
+
+  /**
+   * Crée ou met à jour le graphique Chart.js
+   */
+  private createOrUpdateChart(): void {
+    if (!this.chartCanvas?.nativeElement) return;
+
+    // Détruire l'ancien graphique s'il existe
+    if (this.chart) {
+      this.chart.destroy();
+    }
+
+    // Créer le nouveau graphique
+    this.chart = new Chart(this.chartCanvas.nativeElement, {
+      type: this.chartType,
+      data: this.chartData,
+      options: this.chartOptions
+    });
+  }
+}
+```
+
+POURQUOI CHART.JS NATIF ?
+- Évite les conflits avec ng2-charts
+- Meilleur contrôle sur l'instance
+- Pas de boucles infinies
+- Performance optimisée
+
+3.8 STYLES ET CSS
+===================
+
+a) styles.scss (Styles globaux)
+```scss
+/* Import des bibliothèques CSS */
+@import 'bootstrap/dist/css/bootstrap.min.css';    // Framework CSS Bootstrap
+@import 'leaflet/dist/leaflet.css';                // Styles des cartes Leaflet
+@import 'bootstrap-icons/font/bootstrap-icons.css'; // Icônes Bootstrap
+
+/* Variables SCSS */
+$primary-color: #007bff;
+$success-color: #28a745;
+$warning-color: #ffc107;
+$danger-color: #dc3545;
+
+/* Styles globaux */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+.weather-app-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Mixins SCSS */
+@mixin card-hover {
+  transition: all 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Utilisation des mixins */
+.card {
+  @include card-hover;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+```
+
+AVANTAGES DE SCSS :
+- Variables réutilisables
+- Mixins pour code répétitif
+- Imbrication logique
+- Calculs et opérations
+- Import de fichiers
+
+================================================================================
+4. CONCLUSION ET OBJECTIFS ATTEINTS
+================================================================================
+
+4.1 OBJECTIFS DU PROJET
+=========================
+L'objectif principal était de créer une application météo complète qui permet de :
+- Afficher la météo actuelle d'une ville
+- Consulter les prévisions sur 24h et 7 jours
+- Visualiser les données sur des graphiques
+- Naviguer sur une carte interactive
+- Gérer une liste de villes favorites
+
+4.2 COMMENT L'OBJECTIF EST ATTEINT
+===================================
+
+a) AFFICHAGE MÉTÉO PAR VILLE
+   - Service WeatherService récupère les données via l'API OpenWeatherMap
+   - Composant WeatherCard affiche les informations de manière claire
+   - Gestion des erreurs et états de chargement
+
+b) PRÉVISIONS 24H ET 7 JOURS
+   - API 5-day forecast pour les données réelles
+   - Simulation intelligente pour compléter à 7 jours
+   - Graphiques Chart.js pour la visualisation
+   - Composants dédiés pour chaque type de prévision
+
+c) CARTE INTERACTIVE
+   - Bibliothèque Leaflet pour l'affichage des cartes
+   - Intégration des couches météo OpenWeatherMap
+   - Géolocalisation et recherche de villes
+   - Marqueurs et popups informatifs
+
+d) NAVIGATION ET UX
+   - Routing Angular pour la navigation entre pages
+   - Interface responsive avec Bootstrap
+   - Menu adaptatif mobile/desktop
+   - Gestion des états et transitions
+
+4.3 ARCHITECTURE ET MAINTENANCE
+================================
+L'application suit les bonnes pratiques Angular :
+
+- Séparation des responsabilités (composants, services, modèles)
+- Injection de dépendances pour la réutilisabilité
+- Gestion des erreurs centralisée
+- Code modulaire et maintenable
+- Styles organisés et réutilisables
+
+4.4 APPRENTISSAGE ANGULAR
+==========================
+Ce projet vous a permis de découvrir :
+
+- Structure d'un composant Angular
+- Communication entre composants
+- Gestion des services et de l'état
+- Routing et navigation
+- Intégration d'APIs externes
+- Gestion des erreurs
+- Styles et responsive design
+- Intégration de bibliothèques tierces
+
+4.5 PROCHAINES ÉTAPES
+=======================
+Pour continuer votre apprentissage Angular :
+
+1. Ajouter de nouvelles fonctionnalités (notifications, historique)
+2. Implémenter l'authentification utilisateur
+3. Ajouter des tests unitaires
+4. Optimiser les performances
+5. Déployer l'application
+6. Explorer d'autres concepts (guards, interceptors, etc.)
+
+================================================================================
+CONCLUSION
+================================================================================
+
+Ce projet météo vous a donné une base solide en Angular. Vous avez appris à :
+- Structurer une application Angular
+- Créer des composants réutilisables
+- Gérer les services et la logique métier
+- Intégrer des APIs externes
+- Créer une interface utilisateur moderne
+- Gérer la navigation et les états
+
+L'application est maintenant fonctionnelle et vous pouvez la personnaliser selon vos besoins. Continuez à explorer Angular et n'hésitez pas à expérimenter avec de nouvelles fonctionnalités !
+
+Bon apprentissage ! 🚀🌤️
+
+================================================================================
+FIN DU COURS
+================================================================================

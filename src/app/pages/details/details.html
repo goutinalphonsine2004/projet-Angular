@@ -1,0 +1,355 @@
+<div class="details-container">
+  <!-- Header avec navigation -->
+  <div class="header-section">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <h1 class="page-title">
+            <i class="bi bi-info-circle"></i>
+            Détails météo
+          </h1>
+          <p class="subtitle" *ngIf="city">
+            Informations complètes pour <strong>{{ city.name }}</strong>
+            <span *ngIf="city.country">, {{ city.country }}</span>
+          </p>
+        </div>
+        <div class="col-md-6 text-end">
+          <div class="navigation-buttons">
+            <button class="btn btn-outline-primary me-2" (click)="navigateToHome()">
+              <i class="bi bi-house"></i> Accueil
+            </button>
+            <button class="btn btn-outline-info me-2" (click)="navigateToForecast24h()">
+              <i class="bi bi-clock-history"></i> 24h
+            </button>
+            <button class="btn btn-outline-success me-2" (click)="navigateToForecast7days()">
+              <i class="bi bi-calendar-week"></i> 7 jours
+            </button>
+            <button class="btn btn-outline-warning" (click)="navigateToMap()">
+              <i class="bi bi-geo-alt"></i> Carte
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gestion des erreurs -->
+  <app-error-alert 
+    *ngIf="errorMessage"
+    [error]="errorMessage"
+    (actionClick)="onErrorAction(errorMessage)">
+  </app-error-alert>
+
+  <!-- Contenu principal -->
+  <div class="main-content">
+    <div class="container">
+      <!-- Loading spinner -->
+      <div *ngIf="isLoading" class="text-center py-5">
+        <app-loading-spinner></app-loading-spinner>
+        <p class="mt-3 text-muted">Chargement des détails...</p>
+      </div>
+
+      <!-- Contenu des détails -->
+      <div *ngIf="!isLoading && currentWeather" class="details-content">
+        
+        <!-- En-tête avec météo actuelle -->
+        <div class="current-weather-header mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-md-6">
+                  <div class="current-info">
+                    <h2 class="city-name">{{ currentWeather.name }}</h2>
+                    <p class="weather-description">
+                      {{ currentWeather.weather[0]?.description | titlecase }}
+                    </p>
+                    <p class="update-time">
+                      <i class="bi bi-clock"></i>
+                      Dernière mise à jour: {{ formatTime(currentWeather.dt) }}
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-6 text-center">
+                  <div class="weather-icon-large">
+                    <img [src]="getWeatherIcon(currentWeather.weather[0]?.icon || '')" 
+                         [alt]="currentWeather.weather[0]?.description"
+                         class="large-weather-icon">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grille des détails -->
+        <div class="details-grid">
+          <div class="row g-4">
+            
+            <!-- Températures -->
+            <div class="col-lg-6 col-md-12">
+              <div class="detail-card temperature-card">
+                <div class="card">
+                  <div class="card-header">
+                    <h5><i class="bi bi-thermometer-half"></i> Températures</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="main-temperature">
+                      <span class="temp-value" [class]="getTemperatureClass(currentWeather.main.temp)">
+                        {{ currentWeather.main.temp | number:'1.0-0' }}°C
+                      </span>
+                      <span class="temp-description">
+                        {{ getTemperatureDescription(currentWeather.main.temp) }}
+                      </span>
+                    </div>
+                    
+                    <div class="temperature-details">
+                      <div class="temp-item">
+                        <span class="label">Ressenti:</span>
+                        <span [class]="getTemperatureClass(currentWeather.main.feels_like)">
+                          {{ currentWeather.main.feels_like | number:'1.0-0' }}°C
+                        </span>
+                        <small class="description">{{ getFeelsLikeText(currentWeather.main.temp, currentWeather.main.feels_like) }}</small>
+                      </div>
+                      
+                      <div class="temp-item">
+                        <span class="label">Min:</span>
+                        <span [class]="getTemperatureClass(currentWeather.main.temp_min)">
+                          {{ currentWeather.main.temp_min | number:'1.0-0' }}°C
+                        </span>
+                      </div>
+                      
+                      <div class="temp-item">
+                        <span class="label">Max:</span>
+                        <span [class]="getTemperatureClass(currentWeather.main.temp_max)">
+                          {{ currentWeather.main.temp_max | number:'1.0-0' }}°C
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Conditions atmosphériques -->
+            <div class="col-lg-6 col-md-12">
+              <div class="detail-card conditions-card">
+                <div class="card">
+                  <div class="card-header">
+                    <h5><i class="bi bi-cloud"></i> Conditions atmosphériques</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="condition-item">
+                      <span class="label">Humidité:</span>
+                      <span [class]="getHumidityClass(currentWeather.main.humidity)">
+                        {{ currentWeather.main.humidity }}%
+                      </span>
+                      <small class="description">{{ getHumidityDescription(currentWeather.main.humidity) }}</small>
+                    </div>
+                    
+                    <div class="condition-item">
+                      <span class="label">Pression:</span>
+                      <span [class]="getPressureClass(currentWeather.main.pressure)">
+                        {{ currentWeather.main.pressure }} hPa
+                      </span>
+                      <small class="description">{{ getPressureDescription(currentWeather.main.pressure) }}</small>
+                    </div>
+                    
+                    <div class="condition-item">
+                      <span class="label">Nuages:</span>
+                      <span [class]="getCloudClass(currentWeather.clouds.all)">
+                        {{ currentWeather.clouds.all }}%
+                      </span>
+                      <small class="description">{{ getCloudDescription(currentWeather.clouds.all) }}</small>
+                    </div>
+                    
+                    <div class="condition-item">
+                      <span class="label">Visibilité:</span>
+                      <span [class]="getVisibilityClass(currentWeather.visibility)">
+                        {{ (currentWeather.visibility / 1000) | number:'1.0-1' }} km
+                      </span>
+                      <small class="description">{{ getVisibilityDescription(currentWeather.visibility) }}</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Vent -->
+            <div class="col-lg-6 col-md-12">
+              <div class="detail-card wind-card">
+                <div class="card">
+                  <div class="card-header">
+                    <h5><i class="bi bi-wind"></i> Vent</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="wind-main">
+                      <div class="wind-speed">
+                        <span class="speed-value" [class]="getWindClass(currentWeather.wind.speed)">
+                          {{ currentWeather.wind.speed | number:'1.0-0' }} km/h
+                        </span>
+                        <span class="speed-description">{{ getWindDescription(currentWeather.wind.speed) }}</span>
+                      </div>
+                      
+                      <div class="wind-direction">
+                        <i class="bi bi-compass wind-compass"></i>
+                        <span class="direction-value">{{ getWindDirection(currentWeather.wind.deg) }}</span>
+                        <span class="direction-degrees">({{ currentWeather.wind.deg }}°)</span>
+                      </div>
+                    </div>
+                    
+                    <div class="wind-details">
+                      <div class="wind-item">
+                        <span class="label">Rafales:</span>
+                        <span class="value">
+                          {{ currentWeather.wind.gust || currentWeather.wind.speed | number:'1.0-0' }} km/h
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Informations solaires -->
+            <div class="col-lg-6 col-md-12">
+              <div class="detail-card solar-card">
+                <div class="card">
+                  <div class="card-header">
+                    <h5><i class="bi bi-sun"></i> Informations solaires</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="solar-item">
+                      <span class="label">Lever du soleil:</span>
+                      <span class="value text-warning">
+                        <i class="bi bi-sunrise"></i>
+                        {{ formatTime(currentWeather.sys.sunrise) }}
+                      </span>
+                    </div>
+                    
+                    <div class="solar-item">
+                      <span class="label">Coucher du soleil:</span>
+                      <span class="value text-warning">
+                        <i class="bi bi-sunset"></i>
+                        {{ formatTime(currentWeather.sys.sunset) }}
+                      </span>
+                    </div>
+                    
+                    <div class="solar-item">
+                      <span class="label">Durée du jour:</span>
+                      <span class="value text-info">
+                        {{ getDayDuration(currentWeather.sys.sunrise, currentWeather.sys.sunset) }}
+                      </span>
+                    </div>
+                    
+                    <div class="solar-item">
+                      <span class="label">Index UV:</span>
+                      <span [class]="getUvClass(currentWeather.uvi || 0)">
+                        {{ currentWeather.uvi || 0 | number:'1.0-1' }}
+                      </span>
+                      <small class="description">{{ getUvDescription(currentWeather.uvi || 0) }}</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Informations de localisation -->
+            <div class="col-lg-6 col-md-12">
+              <div class="detail-card location-card">
+                <div class="card">
+                  <div class="card-header">
+                    <h5><i class="bi bi-geo-alt"></i> Localisation</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="location-item">
+                      <span class="label">Ville:</span>
+                      <span class="value">{{ currentWeather.name }}</span>
+                    </div>
+                    
+                    <div class="location-item">
+                      <span class="label">Pays:</span>
+                      <span class="value">{{ currentWeather.sys.country }}</span>
+                    </div>
+                    
+                    <div class="location-item">
+                      <span class="label">Coordonnées:</span>
+                      <span class="value">
+                        {{ currentWeather.coord.lat | number:'1.4-4' }}°, 
+                        {{ currentWeather.coord.lon | number:'1.4-4' }}°
+                      </span>
+                    </div>
+                    
+                    <div class="location-item">
+                      <span class="label">Fuseau horaire:</span>
+                      <span class="value">
+                        UTC{{ getTimezoneOffset(currentWeather.timezone) }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Informations techniques -->
+            <div class="col-lg-6 col-md-12">
+              <div class="detail-card technical-card">
+                <div class="card">
+                  <div class="card-header">
+                    <h5><i class="bi bi-gear"></i> Informations techniques</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="technical-item">
+                      <span class="label">ID météo:</span>
+                      <span class="value">{{ currentWeather.weather[0]?.id }}</span>
+                    </div>
+                    
+                    <div class="technical-item">
+                      <span class="label">Code météo:</span>
+                      <span class="value">{{ currentWeather.weather[0]?.main }}</span>
+                    </div>
+                    
+                    <div class="technical-item">
+                      <span class="label">Timestamp:</span>
+                      <span class="value">{{ currentWeather.dt }}</span>
+                    </div>
+                    
+                    <div class="technical-item">
+                      <span class="label">Base de données:</span>
+                      <span class="value">{{ currentWeather.base }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions-section mt-4">
+          <div class="row">
+            <div class="col-12 text-center">
+              <button class="btn btn-primary me-3" (click)="reloadWeather()">
+                <i class="bi bi-arrow-clockwise"></i> Actualiser
+              </button>
+              <button class="btn btn-outline-secondary" (click)="navigateToHome()">
+                <i class="bi bi-house"></i> Retour à l'accueil
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message si pas de données -->
+      <div *ngIf="!isLoading && !currentWeather" class="no-data">
+        <div class="text-center py-5">
+          <i class="bi bi-cloud-slash display-1 text-muted"></i>
+          <h3 class="mt-3">Aucune donnée disponible</h3>
+          <p class="text-muted">Impossible de charger les détails météo pour cette ville.</p>
+          <button class="btn btn-primary" (click)="navigateToHome()">
+            <i class="bi bi-house"></i> Retour à l'accueil
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

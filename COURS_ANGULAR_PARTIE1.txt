@@ -1,0 +1,402 @@
+================================================================================
+                    COURS ANGULAR COMPLET POUR DÉBUTANTS
+                    + EXPLICATION DÉTAILLÉE DU PROJET MÉTÉO
+================================================================================
+
+TABLE DES MATIÈRES
+==================
+1. COURS ANGULAR DE BASE
+   1.1 Qu'est-ce qu'Angular ?
+   1.2 Concepts fondamentaux
+   1.3 Structure d'un projet Angular
+   1.4 Composants
+   1.5 Services
+   1.6 Routing (Navigation)
+   1.7 Modules
+   1.8 Templates et Binding
+   1.9 Directives
+   1.10 Pipes
+
+2. STRUCTURE DU PROJET MÉTÉO
+   2.1 Organisation des dossiers
+   2.2 Fichiers de configuration
+   2.3 Architecture générale
+
+3. EXPLICATION DÉTAILLÉE FICHIER PAR FICHIER
+   3.1 Fichiers de configuration
+   3.2 Composant principal (App)
+   3.3 Modèles de données
+   3.4 Services
+   3.5 Composants météo
+   3.6 Pages de prévisions
+   3.7 Composant de graphique
+   3.8 Styles et CSS
+
+4. CONCLUSION ET OBJECTIFS ATTEINTS
+
+================================================================================
+1. COURS ANGULAR DE BASE
+================================================================================
+
+1.1 QU'EST-CE QU'ANGULAR ?
+============================
+Angular est un framework JavaScript développé par Google pour créer des applications web dynamiques et interactives. C'est un outil moderne qui permet de construire des applications "Single Page Application" (SPA).
+
+Avantages d'Angular :
+- Structure claire et organisée
+- Outils de développement puissants
+- Grande communauté et documentation
+- Performance optimisée
+- Sécurité intégrée
+
+1.2 CONCEPTS FONDAMENTAUX
+==========================
+Angular fonctionne sur plusieurs concepts clés :
+
+a) COMPOSANTS (Components)
+   - Ce sont les blocs de construction de l'interface utilisateur
+   - Chaque composant a : un template HTML, une classe TypeScript, des styles CSS
+   - Exemple : un bouton, une carte, un formulaire
+
+b) SERVICES (Services)
+   - Contiennent la logique métier et les données
+   - Peuvent être partagés entre plusieurs composants
+   - Exemple : service pour récupérer la météo depuis une API
+
+c) MODULES (Modules)
+   - Organisent et regroupent les composants, services et directives
+   - Permettent la réutilisation et la maintenance
+   - Exemple : module pour toutes les fonctionnalités météo
+
+d) ROUTING (Navigation)
+   - Permet de naviguer entre différentes pages sans recharger
+   - Crée une expérience utilisateur fluide
+   - Exemple : aller de la page d'accueil à la page des prévisions
+
+1.3 STRUCTURE D'UN PROJET ANGULAR
+==================================
+Un projet Angular typique contient :
+
+/src/app/          → Code principal de l'application
+/src/assets/       → Images, icônes, fichiers statiques
+/src/environments/ → Configuration pour développement/production
+/src/styles/       → Styles globaux
+/package.json      → Dépendances et scripts
+/angular.json      → Configuration Angular
+/tsconfig.json     → Configuration TypeScript
+
+1.4 COMPOSANTS
+===============
+Un composant Angular est composé de 3 parties :
+
+a) CLASSE TYPESCRIPT (.ts)
+   - Contient la logique et les données
+   - Utilise des décorateurs (@Component)
+   - Gère les événements et la logique métier
+
+b) TEMPLATE HTML (.html)
+   - Définit la structure de l'interface
+   - Utilise la syntaxe Angular ({{ }}, [], (), *ngIf, etc.)
+   - Affiche les données du composant
+
+c) STYLES CSS/SCSS (.scss)
+   - Définit l'apparence du composant
+   - Peut être encapsulé (styles locaux uniquement)
+   - Supporte les variables et mixins SCSS
+
+Exemple de composant simple :
+```typescript
+@Component({
+  selector: 'app-bouton',           // Nom du composant dans le HTML
+  templateUrl: './bouton.html',     // Template HTML
+  styleUrl: './bouton.scss'         // Styles CSS
+})
+export class BoutonComponent {
+  texte = "Cliquez-moi";           // Propriété du composant
+  
+  onClick() {                       // Méthode du composant
+    alert("Bouton cliqué !");
+  }
+}
+```
+
+1.5 SERVICES
+=============
+Les services sont des classes qui contiennent la logique métier :
+
+- Peuvent être injectés dans les composants
+- Partagent des données entre composants
+- Gèrent les appels API et la persistance
+- Sont réutilisables
+
+Exemple de service :
+```typescript
+@Injectable({
+  providedIn: 'root'  // Service disponible globalement
+})
+export class MeteoService {
+  getMeteo(ville: string) {
+    // Logique pour récupérer la météo
+    return this.http.get(`/api/meteo/${ville}`);
+  }
+}
+```
+
+1.6 ROUTING (NAVIGATION)
+==========================
+Le routing permet de naviguer entre les pages :
+
+- Définit les URLs de l'application
+- Charge les composants appropriés
+- Gère les paramètres d'URL
+- Permet la navigation programmatique
+
+Exemple de configuration de routes :
+```typescript
+const routes: Routes = [
+  { path: '', component: AccueilComponent },           // Page d'accueil
+  { path: 'meteo/:ville', component: MeteoComponent }, // Page météo avec paramètre
+  { path: '**', component: NotFoundComponent }         // Page 404
+];
+```
+
+1.7 MODULES
+============
+Les modules organisent l'application :
+
+- NgModule : module principal d'Angular
+- Feature modules : modules pour des fonctionnalités spécifiques
+- Shared modules : modules partagés entre composants
+- Lazy loading : chargement à la demande
+
+1.8 TEMPLATES ET BINDING
+=========================
+Angular offre plusieurs types de binding :
+
+a) INTERPOLATION {{ }}
+   - Affiche des valeurs dans le template
+   - Exemple : {{ nomVille }}
+
+b) PROPERTY BINDING []
+   - Lie une propriété HTML à une valeur
+   - Exemple : [src]="imageUrl"
+
+c) EVENT BINDING ()
+   - Lie un événement à une méthode
+   - Exemple : (click)="onClick()"
+
+d) TWO-WAY BINDING [()]
+   - Synchronise bidirectionnellement les données
+   - Exemple : [(ngModel)]="nom"
+
+1.9 DIRECTIVES
+===============
+Les directives modifient le comportement du DOM :
+
+a) STRUCTURALES (*ngIf, *ngFor, *ngSwitch)
+   - Modifient la structure du DOM
+   - Exemple : *ngFor="let item of items"
+
+b) ATTRIBUTS ([ngClass], [ngStyle])
+   - Modifient l'apparence des éléments
+   - Exemple : [ngClass]="{'actif': isActive}"
+
+1.10 PIPES
+===========
+Les pipes transforment les données d'affichage :
+
+- Formatage des dates, nombres, textes
+- Exemple : {{ date | date:'dd/MM/yyyy' }}
+- Pipes personnalisés possibles
+
+================================================================================
+2. STRUCTURE DU PROJET MÉTÉO
+================================================================================
+
+2.1 ORGANISATION DES DOSSIERS
+==============================
+
+weather-app/
+├── src/
+│   ├── app/                    # Code principal de l'application
+│   │   ├── components/         # Composants réutilisables
+│   │   ├── pages/             # Pages principales
+│   │   ├── services/          # Services métier
+│   │   ├── models/            # Définitions des types
+│   │   └── shared/            # Éléments partagés
+│   ├── assets/                # Ressources statiques
+│   ├── environments/          # Configuration par environnement
+│   └── styles/                # Styles globaux
+├── package.json               # Dépendances npm
+├── angular.json              # Configuration Angular
+└── tsconfig.json             # Configuration TypeScript
+
+2.2 FICHIERS DE CONFIGURATION
+==============================
+
+a) package.json
+   - Liste toutes les dépendances
+   - Définit les scripts de build et développement
+   - Version de l'application
+
+b) angular.json
+   - Configuration spécifique à Angular
+   - Définit les assets, styles, scripts
+   - Configuration de build et serve
+
+c) tsconfig.json
+   - Configuration TypeScript
+   - Options de compilation
+   - Règles strictes
+
+2.3 ARCHITECTURE GÉNÉRALE
+===========================
+L'application suit le pattern MVC (Model-View-Controller) :
+
+- MODELS : Définissent la structure des données météo
+- VIEWS : Composants qui affichent l'interface
+- CONTROLLERS : Services qui gèrent la logique métier
+
+================================================================================
+3. EXPLICATION DÉTAILLÉE FICHIER PAR FICHIER
+================================================================================
+
+3.1 FICHIERS DE CONFIGURATION
+==============================
+
+a) package.json
+```json
+{
+  "name": "weather-app",
+  "version": "0.0.0",
+  "dependencies": {
+    "@angular/common": "^20.1.0",        // Module Angular pour fonctionnalités communes
+    "@angular/core": "^20.1.0",          // Cœur d'Angular (composants, services)
+    "@angular/forms": "^20.1.0",         // Gestion des formulaires
+    "@angular/platform-browser": "^20.1.0", // Support navigateur
+    "@angular/router": "^20.1.0",        // Système de navigation
+    "bootstrap": "^5.3.7",               // Framework CSS pour le design
+    "leaflet": "^1.9.4",                 // Bibliothèque pour les cartes
+    "chart.js": "^4.5.0"                 // Bibliothèque pour les graphiques
+  }
+}
+```
+
+b) angular.json
+```json
+{
+  "projects": {
+    "weather-app": {
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",  // Outil de build
+          "options": {
+            "browser": "src/main.ts",               // Point d'entrée
+            "styles": ["src/styles.scss"],          // Fichiers CSS globaux
+            "assets": [{"glob": "**/*", "input": "public"}] // Ressources
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+3.2 COMPOSANT PRINCIPAL (APP)
+==============================
+
+a) app.ts (Classe principale)
+```typescript
+import { Component, OnInit, HostListener } from '@angular/core';
+
+@Component({
+  selector: 'app-root',           // Nom du composant dans le HTML
+  templateUrl: './app.html',      // Template principal
+  styleUrl: './app.scss'          // Styles principaux
+})
+export class AppComponent implements OnInit {
+  title = 'WeatherApp';           // Titre de l'application
+  isMenuOpen = false;             // État du menu mobile
+  isMobile = false;               // Détection mobile/desktop
+
+  ngOnInit(): void {
+    this.checkScreenSize();        // Vérifier la taille d'écran au démarrage
+  }
+
+  @HostListener('window:resize')  // Écouter le redimensionnement
+  onResize(): void {
+    this.checkScreenSize();        // Recalculer la taille
+  }
+
+  private checkScreenSize(): void {
+    this.isMobile = window.innerWidth < 992;  // Seuil mobile : 992px
+    
+    // Sur desktop, le menu est toujours ouvert
+    if (!this.isMobile) {
+      this.isMenuOpen = true;
+    }
+  }
+
+  toggleMenu(): void {
+    // Seulement sur mobile
+    if (this.isMobile) {
+      this.isMenuOpen = !this.isMenuOpen;
+    }
+  }
+}
+```
+
+POURQUOI CETTE LOGIQUE ?
+- Détection automatique mobile/desktop
+- Menu toujours visible sur desktop (meilleure UX)
+- Menu hamburger seulement sur mobile
+- Gestion responsive intelligente
+
+b) app.html (Template principal)
+```html
+<div class="weather-app-container">
+  <!-- Navigation Bootstrap -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+      <!-- Logo de l'application -->
+      <a class="navbar-brand fw-bold" routerLink="/home" (click)="closeMenu()">
+        🌤️ WeatherApp
+      </a>
+      
+      <!-- Bouton hamburger pour mobile -->
+      <button class="navbar-toggler" type="button" (click)="toggleMenu()" 
+              [class.collapsed]="!isMenuOpen">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <!-- Menu de navigation -->
+      <div class="navbar-collapse" [class.show]="isMenuOpen || !isMobile" 
+           [class.collapse]="isMobile && !isMenuOpen">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/home" routerLinkActive="active" 
+               (click)="closeMenu()">Accueil</a>
+          </li>
+          <!-- Autres liens de navigation -->
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contenu principal avec padding pour la navbar fixe -->
+  <main class="container-fluid" style="padding-top: 80px;">
+    <router-outlet></router-outlet>  <!-- Ici s'affichent les pages -->
+  </main>
+</div>
+```
+
+EXPLICATION DES ATTRIBUTS :
+- routerLink="/home" : Lien de navigation Angular
+- routerLinkActive="active" : Classe CSS active quand la route est active
+- (click)="closeMenu()" : Appel de méthode au clic
+- [class.show]="isMenuOpen || !isMobile" : Classe conditionnelle
+- <router-outlet> : Zone où s'affichent les pages
+
+================================================================================
+FIN DE LA PREMIÈRE PARTIE
+================================================================================

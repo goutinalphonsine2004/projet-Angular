@@ -1,0 +1,168 @@
+<div class="home-page">
+  <!-- Hero Section -->
+  <section class="hero-section text-center py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <h1 class="hero-title mb-4">
+            <i class="fas fa-cloud-sun me-3"></i>
+            Météo en Temps Réel
+          </h1>
+          <p class="hero-subtitle mb-5">
+            Découvrez la météo de votre ville avec des prévisions précises et une interface moderne
+          </p>
+          
+          <!-- Barre de recherche principale -->
+          <div class="search-section mb-4">
+            <app-search-bar
+              (citySelected)="onCitySelected($event)"
+              (searchSubmitted)="onSearchSubmitted($event)"
+              placeholder="Rechercher une ville...">
+            </app-search-bar>
+          </div>
+          
+          <!-- Bouton géolocalisation -->
+          <div class="geolocation-section mb-4">
+            <button 
+              class="btn btn-outline-light btn-lg"
+              (click)="getCurrentLocation()"
+              [disabled]="isLoadingLocation">
+              <i class="fas fa-location-arrow me-2" *ngIf="!isLoadingLocation"></i>
+              <div class="spinner-border spinner-border-sm me-2" *ngIf="isLoadingLocation"></div>
+              {{ isLoadingLocation ? 'Localisation...' : 'Ma Position' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section météo actuelle -->
+  <section class="current-weather-section py-5" *ngIf="currentWeather">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <app-weather-card
+            [weather]="currentWeather"
+            [showHeader]="true"
+            [showDetails]="true"
+            [showActions]="true"
+            [showFavoriteButton]="true"
+            (favoriteToggled)="onFavoriteToggled($event)"
+            (detailsClick)="onDetailsClick($event)"
+            (mapClick)="onMapClick($event)">
+          </app-weather-card>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Actions rapides -->
+  <section class="quick-actions-section py-5" *ngIf="currentWeather">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center mb-4">
+          <h3 class="section-title">Actions Rapides</h3>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-3 col-sm-6">
+          <div class="action-card" (click)="navigateToForecast24h()">
+            <div class="action-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <h5>Prévisions 24h</h5>
+            <p>Heure par heure</p>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="action-card" (click)="navigateToForecast7days()">
+            <div class="action-icon">
+              <i class="fas fa-calendar-week"></i>
+            </div>
+            <h5>7 Jours</h5>
+            <p>Prévisions détaillées</p>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="action-card" (click)="navigateToMap()">
+            <div class="action-icon">
+              <i class="fas fa-map"></i>
+            </div>
+            <h5>Carte Météo</h5>
+            <p>Vue interactive</p>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="action-card" (click)="navigateToFavorites()">
+            <div class="action-icon">
+              <i class="fas fa-heart"></i>
+            </div>
+            <h5>Favoris</h5>
+            <p>Villes sauvegardées</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section favoris récents -->
+  <section class="recent-favorites-section py-5" *ngIf="recentFavorites.length > 0">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 mb-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <h3 class="section-title">Vos Favoris</h3>
+            <a class="btn btn-outline-primary" routerLink="/favorites">
+              Voir tout <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-lg-4 col-md-6" *ngFor="let favorite of recentFavorites.slice(0, 3)">
+          <app-weather-card
+            [weather]="favorite.weather || null"
+            [city]="favorite.city"
+            [size]="'sm'"
+            [showHeader]="true"
+            [showDetails]="false"
+            [showActions]="false"
+            (cardClick)="onFavoriteCardClick(favorite)">
+          </app-weather-card>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- État de chargement -->
+  <section class="loading-section py-5" *ngIf="isLoading">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-auto">
+          <app-loading-spinner
+            [overlay]="false"
+            [message]="loadingMessage"
+            [size]="'lg'">
+          </app-loading-spinner>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Alertes d'erreur -->
+  <section class="error-section py-3" *ngIf="errorMessage">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <app-error-alert
+            [error]="errorMessage"
+            [dismissible]="true"
+            (dismiss)="clearError()"
+            (actionClick)="onErrorAction($event)">
+          </app-error-alert>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

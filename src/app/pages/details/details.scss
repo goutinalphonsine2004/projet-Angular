@@ -1,0 +1,675 @@
+// Variables
+$primary-color: #007bff;
+$success-color: #28a745;
+$warning-color: #ffc107;
+$danger-color: #dc3545;
+$info-color: #17a2b8;
+$light-color: #f8f9fa;
+$dark-color: #343a40;
+$border-radius: 0.5rem;
+$box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+$transition: all 0.3s ease;
+
+// Mixins
+@mixin card-hover {
+  transition: $transition;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+}
+
+@mixin responsive-grid($breakpoint) {
+  @media (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+// Styles principaux
+.details-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding-bottom: 2rem;
+
+  // Header Section
+  .header-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
+
+    .page-title {
+      color: $dark-color;
+      font-weight: 700;
+      margin: 0;
+      font-size: 2.5rem;
+      
+      i {
+        color: $primary-color;
+        margin-right: 0.5rem;
+      }
+    }
+
+    .subtitle {
+      color: #6c757d;
+      margin: 0.5rem 0 0 0;
+      font-size: 1.1rem;
+    }
+
+    .navigation-buttons {
+      .btn {
+        border-radius: $border-radius;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        transition: $transition;
+        
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: $box-shadow;
+        }
+      }
+    }
+  }
+
+  // Main Content
+  .main-content {
+    .container {
+      max-width: 1400px;
+    }
+  }
+
+  // Current Weather Header
+  .current-weather-header {
+    .card {
+      border: none;
+      border-radius: $border-radius;
+      box-shadow: $box-shadow;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+
+      .card-body {
+        padding: 2rem;
+      }
+    }
+
+    .city-name {
+      color: $dark-color;
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+      font-size: 2.5rem;
+    }
+
+    .weather-description {
+      color: #6c757d;
+      font-size: 1.2rem;
+      margin: 0 0 1rem 0;
+      text-transform: capitalize;
+    }
+
+    .update-time {
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin: 0;
+      
+      i {
+        margin-right: 0.5rem;
+        color: $warning-color;
+      }
+    }
+
+    .weather-icon-large {
+      .large-weather-icon {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+      }
+    }
+  }
+
+  // Details Grid
+  .details-grid {
+    .detail-card {
+      @include card-hover;
+
+      .card {
+        border: none;
+        border-radius: $border-radius;
+        box-shadow: $box-shadow;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        height: 100%;
+        transition: $transition;
+
+        &:hover {
+          background: rgba(255, 255, 255, 1);
+        }
+
+        .card-header {
+          background: linear-gradient(135deg, $info-color, darken($info-color, 10%));
+          color: white;
+          border: none;
+          border-radius: $border-radius $border-radius 0 0;
+          padding: 1rem 1.5rem;
+
+          h5 {
+            margin: 0;
+            font-weight: 600;
+            
+            i {
+              margin-right: 0.5rem;
+            }
+          }
+        }
+
+        .card-body {
+          padding: 1.5rem;
+        }
+      }
+    }
+
+    // Temperature Card
+    .temperature-card {
+      .card-header {
+        background: linear-gradient(135deg, $danger-color, darken($danger-color, 10%));
+      }
+
+      .main-temperature {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        
+        .temp-value {
+          font-size: 3rem;
+          font-weight: 700;
+          display: block;
+          margin-bottom: 0.5rem;
+        }
+        
+        .temp-description {
+          color: #6c757d;
+          font-size: 1rem;
+          font-style: italic;
+        }
+      }
+
+      .temperature-details {
+        .temp-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1rem;
+          padding: 0.5rem 0;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+          
+          &:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+          }
+
+          .label {
+            color: #6c757d;
+            font-weight: 500;
+          }
+          
+          span:not(.label) {
+            font-weight: 700;
+            font-size: 1.1rem;
+          }
+          
+          .description {
+            display: block;
+            color: #6c757d;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            font-style: italic;
+          }
+        }
+      }
+    }
+
+    // Conditions Card
+    .conditions-card {
+      .card-header {
+        background: linear-gradient(135deg, $success-color, darken($success-color, 10%));
+      }
+
+      .condition-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        
+        &:last-child {
+          border-bottom: none;
+          margin-bottom: 0;
+        }
+
+        .label {
+          color: #6c757d;
+          font-weight: 500;
+        }
+        
+        span:not(.label) {
+          font-weight: 700;
+          font-size: 1.1rem;
+        }
+        
+        .description {
+          display: block;
+          color: #6c757d;
+          font-size: 0.8rem;
+          margin-top: 0.25rem;
+          font-style: italic;
+        }
+      }
+    }
+
+    // Wind Card
+    .wind-card {
+      .card-header {
+        background: linear-gradient(135deg, $warning-color, darken($warning-color, 10%));
+      }
+
+      .wind-main {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        
+        .wind-speed {
+          margin-bottom: 1rem;
+          
+          .speed-value {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.5rem;
+          }
+          
+          .speed-description {
+            color: #6c757d;
+            font-size: 1rem;
+            font-style: italic;
+          }
+        }
+        
+        .wind-direction {
+          .wind-compass {
+            font-size: 2rem;
+            color: $info-color;
+            margin-right: 0.5rem;
+          }
+          
+          .direction-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: $dark-color;
+          }
+          
+          .direction-degrees {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+          }
+        }
+      }
+
+      .wind-details {
+        .wind-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.5rem 0;
+          
+          .label {
+            color: #6c757d;
+            font-weight: 500;
+          }
+          
+          .value {
+            font-weight: 700;
+            font-size: 1.1rem;
+          }
+        }
+      }
+    }
+
+    // Solar Card
+    .solar-card {
+      .card-header {
+        background: linear-gradient(135deg, $warning-color, darken($warning-color, 10%));
+      }
+
+      .solar-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        
+        &:last-child {
+          border-bottom: none;
+          margin-bottom: 0;
+        }
+
+        .label {
+          color: #6c757d;
+          font-weight: 500;
+        }
+        
+        .value {
+          font-weight: 700;
+          font-size: 1.1rem;
+          display: flex;
+          align-items: center;
+          
+          i {
+            margin-right: 0.5rem;
+          }
+        }
+        
+        .description {
+          display: block;
+          color: #6c757d;
+          font-size: 0.8rem;
+          margin-top: 0.25rem;
+          font-style: italic;
+        }
+      }
+    }
+
+    // Location Card
+    .location-card {
+      .card-header {
+        background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
+      }
+
+      .location-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        
+        &:last-child {
+          border-bottom: none;
+          margin-bottom: 0;
+        }
+
+        .label {
+          color: #6c757d;
+          font-weight: 500;
+        }
+        
+        .value {
+          font-weight: 700;
+          font-size: 1.1rem;
+          color: $dark-color;
+        }
+      }
+    }
+
+    // Technical Card
+    .technical-card {
+      .card-header {
+        background: linear-gradient(135deg, #6c757d, darken(#6c757d, 10%));
+      }
+
+      .technical-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        
+        &:last-child {
+          border-bottom: none;
+          margin-bottom: 0;
+        }
+
+        .label {
+          color: #6c757d;
+          font-weight: 500;
+        }
+        
+        .value {
+          font-weight: 700;
+          font-size: 1.1rem;
+          color: $dark-color;
+          font-family: monospace;
+        }
+      }
+    }
+  }
+
+  // Actions Section
+  .actions-section {
+    .btn {
+      border-radius: $border-radius;
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      transition: $transition;
+      
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: $box-shadow;
+      }
+    }
+  }
+
+  // No Data State
+  .no-data {
+    .display-1 {
+      font-size: 4rem;
+      color: #dee2e6;
+    }
+    
+    h3 {
+      color: #6c757d;
+      font-weight: 600;
+    }
+    
+    .btn {
+      border-radius: $border-radius;
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+    }
+  }
+
+  // Responsive Design
+  @include responsive-grid(1200px) {
+    .details-grid .detail-card {
+      margin-bottom: 1rem;
+    }
+  }
+
+  @include responsive-grid(992px) {
+    .header-section {
+      .page-title {
+        font-size: 2rem;
+      }
+      
+      .navigation-buttons {
+        margin-top: 1rem;
+        text-align: left;
+      }
+    }
+    
+    .current-weather-header .card-body {
+      padding: 1.5rem;
+    }
+    
+    .details-grid .detail-card .card-body {
+      padding: 1rem;
+    }
+  }
+
+  @include responsive-grid(768px) {
+    .header-section {
+      padding: 1rem 0;
+      
+      .page-title {
+        font-size: 1.75rem;
+        text-align: center;
+      }
+      
+      .subtitle {
+        text-align: center;
+      }
+    }
+    
+    .navigation-buttons {
+      text-align: center;
+      
+      .btn {
+        margin-bottom: 0.5rem;
+        width: 100%;
+      }
+    }
+    
+    .current-weather-header {
+      .city-name {
+        font-size: 2rem;
+        text-align: center;
+      }
+      
+      .weather-description {
+        text-align: center;
+      }
+      
+      .update-time {
+        text-align: center;
+      }
+    }
+    
+    .details-grid .detail-card .card-header h5 {
+      font-size: 1.1rem;
+    }
+    
+    .actions-section .btn {
+      margin-bottom: 0.5rem;
+      width: 100%;
+    }
+  }
+
+  @include responsive-grid(576px) {
+    .header-section .page-title {
+      font-size: 1.5rem;
+    }
+    
+    .current-weather-header .card-body {
+      padding: 1rem;
+    }
+    
+    .details-grid .detail-card .card-body {
+      padding: 0.75rem;
+    }
+    
+    .large-weather-icon {
+      width: 80px !important;
+      height: 80px !important;
+    }
+    
+    .main-temperature .temp-value {
+      font-size: 2rem;
+    }
+    
+    .wind-main .speed-value {
+      font-size: 1.5rem;
+    }
+  }
+
+  // Dark mode support
+  @media (prefers-color-scheme: dark) {
+    .header-section {
+      background: rgba(52, 58, 64, 0.95);
+      
+      .page-title {
+        color: white;
+      }
+      
+      .subtitle {
+        color: #adb5bd;
+      }
+    }
+    
+    .card {
+      background: rgba(52, 58, 64, 0.95);
+      color: white;
+    }
+    
+    .city-name {
+      color: white;
+    }
+    
+    .weather-description, .update-time {
+      color: #adb5bd;
+    }
+    
+    .label {
+      color: #adb5bd;
+    }
+    
+    .description {
+      color: #adb5bd;
+    }
+    
+    .value {
+      color: white;
+    }
+  }
+
+  // Animations
+  .detail-card {
+    animation: fadeInUp 0.6s ease-out;
+    
+    @for $i from 1 through 6 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i * 0.1}s;
+      }
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  // UV Index colors
+  .text-orange {
+    color: #fd7e14 !important;
+  }
+
+  .text-purple {
+    color: #6f42c1 !important;
+  }
+
+  // Custom scrollbar
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: $primary-color;
+    border-radius: 4px;
+    
+    &:hover {
+      background: darken($primary-color, 10%);
+    }
+  }
+}
