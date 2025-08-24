@@ -32,7 +32,10 @@ jobs:
       run: npm ci
       
     - name: Build Angular app
-      run: npm run build -- --base-href="/projet-Angular/"
+      run: npm run build --if-present --configuration=production
+      
+    - name: List dist directory
+      run: ls -la dist/
       
     - name: Setup Pages
       uses: actions/configure-pages@v4
@@ -40,7 +43,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: './dist/weather-app'
+        path: './dist'
 
   deploy:
     environment:
