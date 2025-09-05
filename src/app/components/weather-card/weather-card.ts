@@ -9,7 +9,7 @@ import { StorageService } from '../../services/storage.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './weather-card.html',
-  styleUrl: './weather-card.scss'
+  styleUrls: ['./weather-card.scss']
 })
 export class WeatherCardComponent implements OnInit, OnChanges {
   @Input() weather: CurrentWeather | null = null;
@@ -22,7 +22,7 @@ export class WeatherCardComponent implements OnInit, OnChanges {
   @Input() showFavoriteButton: boolean = true;
   @Input() showActions: boolean = false;
   @Input() isLoading: boolean = false;
-  
+
   @Output() favoriteToggled = new EventEmitter<{ city: City; isFavorite: boolean }>();
   @Output() detailsClick = new EventEmitter<CurrentWeather>();
   @Output() mapClick = new EventEmitter<CurrentWeather>();
@@ -30,6 +30,7 @@ export class WeatherCardComponent implements OnInit, OnChanges {
   @Output() cardClick = new EventEmitter<CurrentWeather>();
 
   isFavorite: boolean = false;
+  showActionsDropdown: boolean = false;
 
   constructor(
     private weatherService: WeatherService,
@@ -52,12 +53,12 @@ export class WeatherCardComponent implements OnInit, OnChanges {
   private checkFavoriteStatus(): void {
     if (this.weather && this.weather.name && this.weather.sys?.country) {
       this.isFavorite = this.storageService.isFavorite(
-        this.weather.name, 
+        this.weather.name,
         this.weather.sys.country
       );
     } else if (this.city) {
       this.isFavorite = this.storageService.isFavorite(
-        this.city.name, 
+        this.city.name,
         this.city.country
       );
     }
@@ -78,7 +79,7 @@ export class WeatherCardComponent implements OnInit, OnChanges {
 
     if (this.isFavorite) {
       const success = this.storageService.removeFromFavorites(
-        cityToToggle.name, 
+        cityToToggle.name,
         cityToToggle.country
       );
       if (success) {
@@ -121,9 +122,9 @@ export class WeatherCardComponent implements OnInit, OnChanges {
    */
   isWeatherType(type: string): boolean {
     if (!this.weather?.weather?.[0]) return false;
-    
+
     const mainWeather = this.weather.weather[0].main.toLowerCase();
-    
+
     switch (type) {
       case 'clear':
         return mainWeather === 'clear';
@@ -169,7 +170,7 @@ export class WeatherCardComponent implements OnInit, OnChanges {
   onShareClick(): void {
     if (this.weather) {
       this.shareClick.emit(this.weather);
-      
+
       // Implémentation native du partage si disponible
       if (navigator.share) {
         navigator.share({
@@ -185,5 +186,9 @@ export class WeatherCardComponent implements OnInit, OnChanges {
     if (this.weather) {
       this.cardClick.emit(this.weather);
     }
+  }
+
+  toggleActionsMenu(): void {
+    this.showActionsDropdown = !this.showActionsDropdown;
   }
 }

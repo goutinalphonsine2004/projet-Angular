@@ -1,39 +1,9 @@
 <div class="weather-app-container">
-  <!-- Navigation Bootstrap -->
-  <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-    <div class="container">
-      <a class="navbar-brand fw-bold" routerLink="/home" (click)="closeMenu()">
-        🌤️ WeatherApp
-      </a>
-      
-      <button class="navbar-toggler" type="button" (click)="toggleMenu()" [class.collapsed]="!isMenuOpen">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      
-      <div class="navbar-collapse" [class.show]="isMenuOpen || !isMobile" [class.collapse]="isMobile && !isMenuOpen">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/home" routerLinkActive="active" (click)="closeMenu()">Accueil</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/forecast-24h" routerLinkActive="active" (click)="closeMenu()">24h</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/forecast-7days" routerLinkActive="active" (click)="closeMenu()">7 jours</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/map" routerLinkActive="active" (click)="closeMenu()">Carte</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/favorites" routerLinkActive="active" (click)="closeMenu()">Favoris</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <!-- Nouvelle navbar avec Tailwind -->
+  <app-navbar></app-navbar>
 
   <!-- Contenu principal avec padding pour la navbar fixe -->
-  <main class="container-fluid" style="padding-top: 80px;">
+  <main class="pt-16">
     <router-outlet></router-outlet>
   </main>
 </div>

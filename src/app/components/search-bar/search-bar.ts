@@ -11,8 +11,9 @@ import { City } from '../../models/weather.model';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './search-bar.html',
-  styleUrl: './search-bar.scss'
+  styleUrls: ['./search-bar.scss']   
 })
+
 export class SearchBarComponent implements OnInit, OnDestroy {
   @Input() placeholder: string = 'Rechercher une ville...';
   @Input() size: 'sm' | 'md' | 'lg' = 'lg';

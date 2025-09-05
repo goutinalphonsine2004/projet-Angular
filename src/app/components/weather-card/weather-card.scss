@@ -1,329 +1,50 @@
-.weather-card {
-  transition: transform 0.2s ease-in-out;
-  
-  &:hover {
-    transform: translateY(-2px);
-  }
+/* Styles Tailwind pour la carte météo - maintenant principalement géré par les classes Tailwind dans le HTML */
 
-  .card {
-    border: none;
-    border-radius: 20px;
-    overflow: hidden;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-
-    .card-header {
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      padding: 1rem 1.5rem;
-      
-      h6 {
-        color: #2c3e50;
-        font-size: 1.1rem;
-      }
-    }
-
-    .card-body {
-      padding: 1.5rem;
-    }
-
-    .card-footer {
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      padding: 0.75rem 1.5rem;
-    }
-  }
-
-  // Styles selon la taille
-  &.card-sm {
-    .card {
-      .card-body {
-        padding: 1rem;
-      }
-      
-      .temperature {
-        font-size: 2rem;
-      }
-      
-      .weather-icon {
-        width: 50px;
-        height: 50px;
-      }
-    }
-  }
-
-  &.card-lg {
-    .card {
-      .card-body {
-        padding: 2rem;
-      }
-      
-      .temperature {
-        font-size: 4rem;
-      }
-      
-      .weather-icon {
-        width: 80px;
-        height: 80px;
-      }
-    }
-  }
-
-  // Affichage principal de la météo
-  .main-weather {
-    .temperature-display {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      margin-bottom: 1rem;
-
-      @media (min-width: 768px) {
-        justify-content: flex-start;
-      }
-
-      .temperature {
-        font-size: 3rem;
-        font-weight: 300;
-        color: #2c3e50;
-        line-height: 1;
-      }
-
-      .weather-icon-container {
-        .weather-icon {
-          width: 60px;
-          height: 60px;
-          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-        }
-      }
-    }
-
-    .weather-description {
-      font-size: 1.1rem;
-      color: #34495e;
-      font-weight: 500;
-    }
-
-    .feels-like {
-      color: #7f8c8d;
-    }
-  }
-
-  // Détails météo
-  .weather-details {
-    .detail-row {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1rem;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-
-      .detail-item {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem;
-        background: rgba(255, 255, 255, 0.5);
-        border-radius: 12px;
-        transition: all 0.2s ease;
-
-        &:hover {
-          background: rgba(255, 255, 255, 0.7);
-          transform: scale(1.02);
-        }
-
-        i {
-          font-size: 1.2rem;
-          min-width: 20px;
-        }
-
-        div {
-          small {
-            display: block;
-            font-size: 0.75rem;
-            line-height: 1;
-          }
-
-          .fw-bold {
-            font-size: 0.9rem;
-            line-height: 1.2;
-            margin-top: 2px;
-          }
-        }
-      }
-    }
-  }
-
-  // Styles selon le type de météo
-  &.weather-sunny {
-    .card {
-      background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
-      
-      .temperature {
-        color: #d63031;
-      }
-    }
-  }
-
-  &.weather-cloudy {
-    .card {
-      background: linear-gradient(135deg, #ddd6fe 0%, #a78bfa 100%);
-      
-      .temperature {
-        color: #5b21b6;
-      }
-    }
-  }
-
-  &.weather-rainy {
-    .card {
-      background: linear-gradient(135deg, #a7f3d0 0%, #34d399 100%);
-      
-      .temperature {
-        color: #065f46;
-      }
-    }
-  }
-
-  &.weather-snowy {
-    .card {
-      background: linear-gradient(135deg, #f0f9ff 0%, #bae6fd 100%);
-      
-      .temperature {
-        color: #0c4a6e;
-      }
-    }
-  }
-
-  &.weather-stormy {
-    .card {
-      background: linear-gradient(135deg, #334155 0%, #475569 100%);
-      color: white;
-      
-      .temperature,
-      .weather-description,
-      h6 {
-        color: white;
-      }
-
-      .text-muted {
-        color: rgba(255, 255, 255, 0.7) !important;
-      }
-
-      .detail-item {
-        background: rgba(255, 255, 255, 0.1);
-        
-        &:hover {
-          background: rgba(255, 255, 255, 0.2);
-        }
-      }
-    }
-  }
-
-  // Responsive design
-  @media (max-width: 767px) {
-    .weather-details {
-      .detail-row {
-        flex-direction: column;
-        gap: 0.5rem;
-
-        .detail-item {
-          gap: 0.75rem;
-        }
-      }
-    }
-
-    .main-weather {
-      .temperature-display {
-        flex-direction: column;
-        gap: 0.5rem;
-
-        .temperature {
-          font-size: 2.5rem;
-        }
-      }
-    }
-  }
-
-  // Mode sombre
-  @media (prefers-color-scheme: dark) {
-    .card {
-      background: linear-gradient(135deg, rgba(55, 65, 81, 0.9) 0%, rgba(75, 85, 99, 0.8) 100%);
-      color: white;
-
-      .card-header {
-        background: rgba(0, 0, 0, 0.1);
-        
-        h6 {
-          color: white;
-        }
-      }
-
-      .card-footer {
-        background: rgba(0, 0, 0, 0.1);
-      }
-
-      .temperature,
-      .weather-description {
-        color: white;
-      }
-
-      .detail-item {
-        background: rgba(255, 255, 255, 0.1);
-        color: white;
-        
-        &:hover {
-          background: rgba(255, 255, 255, 0.2);
-        }
-      }
-    }
-  }
-
-  // Animation d'apparition
-  animation: fadeInUp 0.5s ease-out;
+/* Styles conditionnels selon le type de météo */
+.weather-sunny {
+  background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
+.weather-cloudy {
+  background: linear-gradient(135deg, #ddd6fe 0%, #a78bfa 100%);
+}
+
+.weather-rainy {
+  background: linear-gradient(135deg, #a7f3d0 0%, #34d399 100%);
+}
+
+.weather-snowy {
+  background: linear-gradient(135deg, #f0f9ff 0%, #bae6fd 100%);
+}
+
+.weather-stormy {
+  background: linear-gradient(135deg, #334155 0%, #475569 100%);
+  color: white;
+}
+
+/* Animation de chargement personnalisée */
+@keyframes spin {
   to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: rotate(360deg);
   }
 }
 
-// Styles pour les boutons d'action
-.btn-outline-danger.btn-danger {
-  background-color: #dc3545;
-  border-color: #dc3545;
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
 
-.dropdown-menu {
-  border: none;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.95);
+/* Styles pour les éléments interactifs */
+.weather-card {
+  transition: all 0.3s ease;
+}
 
-  .dropdown-item {
-    border-radius: 8px;
-    margin: 0.25rem;
-    transition: all 0.2s ease;
+.weather-card:hover {
+  transform: scale(1.02);
+}
 
-    &:hover {
-      background: rgba(102, 126, 234, 0.1);
-      transform: translateX(3px);
-    }
-
-    i {
-      color: #667eea;
-    }
+/* Responsive design */
+@media (max-width: 768px) {
+  .weather-card {
+    margin: 0.5rem;
   }
 }
-
