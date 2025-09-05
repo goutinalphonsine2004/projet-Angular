@@ -8,7 +8,9 @@ import { RouterModule, RouterOutlet } from '@angular/router';
   imports: [CommonModule, RouterModule, RouterOutlet],
   template: `
     <!-- Navigation principale -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <nav
+      class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top"
+    >
       <div class="container">
         <!-- Logo -->
         <a class="navbar-brand" routerLink="/">
@@ -130,13 +132,17 @@ import { RouterModule, RouterOutlet } from '@angular/router';
       }
 
       .nav-link:hover {
-        color: #14263d !important;
+        color: #fff !important;
         transform: translateY(-1px);
+        background-color: #2a333c;
+        border-radius: 5px;
       }
 
       .nav-link.active {
-        color: #14263d !important;
-        font-weight: 600;
+        color: #fff !important;
+        font-weight: 900;
+        background-color: #2a333c;
+        border-radius: 5px;
       }
 
       .nav-link i {

@@ -3,17 +3,17 @@
   <div class="header-section">
     <div class="container">
       <div class="row align-items-center">
-        <div class="col-md-6">
-          <h1 class="page-title">
+        <div class="">
+          <h1 class="page-title text-center">
             <i class="bi bi-calendar-week"></i>
             Prévisions 7 jours
           </h1>
-          <p class="subtitle" *ngIf="city">
+          <p class="subtitle text-center" *ngIf="city">
             Météo détaillée pour <strong>{{ city.name }}</strong>
             <span *ngIf="city.country">, {{ city.country }}</span>
           </p>
         </div>
-        <div class="col-md-6 text-end">
+        <!-- <div class="col-md-6 text-end">
           <div class="navigation-buttons">
             <button class="btn btn-outline-primary me-2" (click)="navigateToHome()">
               <i class="bi bi-house"></i> Accueil
@@ -28,16 +28,17 @@
               <i class="bi bi-geo-alt"></i> Carte
             </button>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
 
   <!-- Gestion des erreurs -->
-  <app-error-alert 
+  <app-error-alert
     *ngIf="errorMessage"
     [error]="errorMessage"
-    (actionClick)="onErrorAction(errorMessage)">
+    (actionClick)="onErrorAction(errorMessage)"
+  >
   </app-error-alert>
 
   <!-- Contenu principal -->
@@ -50,8 +51,10 @@
       </div>
 
       <!-- Contenu des prévisions -->
-      <div *ngIf="!isLoading && dailyForecast.length > 0" class="forecast-content">
-        
+      <div
+        *ngIf="!isLoading && dailyForecast.length > 0"
+        class="forecast-content"
+      >
         <!-- Graphique principal -->
         <div class="chart-section mb-4">
           <div class="card">
@@ -61,17 +64,22 @@
                 Évolution sur 7 jours
               </h3>
               <div class="card-actions">
-                <button class="btn btn-sm btn-outline-secondary" (click)="reloadForecast()">
+                <button
+                  class="btn btn-sm btn-outline-secondary"
+                  (click)="reloadForecast()"
+                >
                   <i class="bi bi-arrow-clockwise"></i> Actualiser
                 </button>
               </div>
             </div>
             <div class="card-body">
-              <div class="chart-container" style="height: 400px;">
+              <div class="chart-container" style="height: 500px">
                 <app-forecast-chart
                   [forecastData]="chartData"
                   [title]="'Prévisions 7 jours - ' + (city?.name || '')"
-                  [period]="'7days'">
+                  [period]="'7days'"
+                  class="text-black"
+                >
                 </app-forecast-chart>
               </div>
             </div>
@@ -88,53 +96,74 @@
               </h3>
             </div>
           </div>
-          
+
           <div class="row g-3">
-            <div class="col-lg-4 col-md-6" *ngFor="let day of dailyForecast; trackBy: trackByDay">
+            <div
+              class="col-lg-4 col-md-6"
+              *ngFor="let day of dailyForecast; trackBy: trackByDay"
+            >
               <div class="daily-card">
                 <div class="card h-100">
                   <div class="card-header">
                     <h5 class="day-title">{{ formatDate(day.dt) }}</h5>
-                    <small class="day-subtitle">{{ formatShortDate(day.dt) }}</small>
+                    <small class="day-subtitle">{{
+                      formatShortDate(day.dt)
+                    }}</small>
                   </div>
-                  
+
                   <div class="card-body text-center">
                     <!-- Icône météo -->
                     <div class="weather-icon my-3">
-                      <img [src]="getWeatherIcon(day.weather[0].icon)" 
-                           [alt]="day.weather[0].description"
-                           class="weather-icon-img">
-                      <p class="weather-description">{{ day.weather[0].description }}</p>
+                      <img
+                        [src]="getWeatherIcon(day.weather[0].icon)"
+                        [alt]="day.weather[0].description"
+                        class="weather-icon-img"
+                      />
+                      <p class="weather-description">
+                        {{ day.weather[0].description }}
+                      </p>
                     </div>
-                    
+
                     <!-- Températures -->
                     <div class="temperature-section">
                       <div class="temp-max">
                         <span class="temp-label">Max:</span>
-                        <span [class]="getTemperatureClass(day.temp.max)" class="temp-value">
-                          {{ day.temp.max | number:'1.0-0' }}°C
+                        <span
+                          [class]="getTemperatureClass(day.temp.max)"
+                          class="temp-value"
+                        >
+                          {{ day.temp.max | number : "1.0-0" }}°C
                         </span>
                       </div>
                       <div class="temp-min">
                         <span class="temp-label">Min:</span>
-                        <span [class]="getTemperatureClass(day.temp.min)" class="temp-value">
-                          {{ day.temp.min | number:'1.0-0' }}°C
+                        <span
+                          [class]="getTemperatureClass(day.temp.min)"
+                          class="temp-value"
+                        >
+                          {{ day.temp.min | number : "1.0-0" }}°C
                         </span>
                       </div>
                       <div class="temp-day">
                         <span class="temp-label">Jour:</span>
-                        <span [class]="getTemperatureClass(day.temp.day)" class="temp-value">
-                          {{ day.temp.day | number:'1.0-0' }}°C
+                        <span
+                          [class]="getTemperatureClass(day.temp.day)"
+                          class="temp-value"
+                        >
+                          {{ day.temp.day | number : "1.0-0" }}°C
                         </span>
                       </div>
                       <div class="temp-night">
                         <span class="temp-label">Nuit:</span>
-                        <span [class]="getTemperatureClass(day.temp.night)" class="temp-value">
-                          {{ day.temp.night | number:'1.0-0' }}°C
+                        <span
+                          [class]="getTemperatureClass(day.temp.night)"
+                          class="temp-value"
+                        >
+                          {{ day.temp.night | number : "1.0-0" }}°C
                         </span>
                       </div>
                     </div>
-                    
+
                     <!-- Détails météo -->
                     <div class="weather-details">
                       <div class="detail-row">
@@ -145,16 +174,16 @@
                           {{ day.humidity }}%
                         </span>
                       </div>
-                      
+
                       <div class="detail-row">
                         <span class="detail-label">
                           <i class="bi bi-wind"></i> Vent:
                         </span>
                         <span [class]="getWindClass(day.wind_speed)">
-                          {{ day.wind_speed | number:'1.0-0' }} km/h
+                          {{ day.wind_speed | number : "1.0-0" }} km/h
                         </span>
                       </div>
-                      
+
                       <div class="detail-row">
                         <span class="detail-label">
                           <i class="bi bi-compass"></i> Direction:
@@ -163,26 +192,26 @@
                           {{ getWindDirection(day.wind_deg) }}
                         </span>
                       </div>
-                      
+
                       <div class="detail-row" *ngIf="day.pop > 0">
                         <span class="detail-label">
                           <i class="bi bi-cloud-rain"></i> Précipitations:
                         </span>
                         <span class="precipitation">
-                          {{ (day.pop * 100) | number:'1.0-0' }}%
+                          {{ day.pop * 100 | number : "1.0-0" }}%
                         </span>
                       </div>
-                      
+
                       <div class="detail-row">
                         <span class="detail-label">
                           <i class="bi bi-sun"></i> UV:
                         </span>
                         <span [class]="getUvClass(day.uvi)">
-                          {{ day.uvi | number:'1.0-1' }} ({{ getUvDescription(day.uvi) }})
+                          {{ day.uvi | number : "1.0-1" }} ({{
+                            getUvDescription(day.uvi)
+                          }})
                         </span>
                       </div>
-                      
-                      
                     </div>
                   </div>
                 </div>
@@ -203,25 +232,25 @@
                   <div class="summary-item">
                     <span class="label">Min globale:</span>
                     <span class="value text-primary">
-                      {{ getMinTemperature() | number:'1.0-0' }}°C
+                      {{ getMinTemperature() | number : "1.0-0" }}°C
                     </span>
                   </div>
                   <div class="summary-item">
                     <span class="label">Max globale:</span>
                     <span class="value text-danger">
-                      {{ getMaxTemperature() | number:'1.0-0' }}°C
+                      {{ getMaxTemperature() | number : "1.0-0" }}°C
                     </span>
                   </div>
                   <div class="summary-item">
                     <span class="label">Moyenne jour:</span>
                     <span class="value text-info">
-                      {{ getAverageTemperature() | number:'1.0-0' }}°C
+                      {{ getAverageTemperature() | number : "1.0-0" }}°C
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-            
+
             <div class="col-md-4">
               <div class="card">
                 <div class="card-header">
@@ -231,25 +260,25 @@
                   <div class="summary-item">
                     <span class="label">Vent max:</span>
                     <span class="value text-warning">
-                      {{ getMaxWindSpeed() | number:'1.0-0' }} km/h
+                      {{ getMaxWindSpeed() | number : "1.0-0" }} km/h
                     </span>
                   </div>
                   <div class="summary-item">
                     <span class="label">Humidité moy:</span>
                     <span class="value text-info">
-                      {{ getAverageHumidity() | number:'1.0-0' }}%
+                      {{ getAverageHumidity() | number : "1.0-0" }}%
                     </span>
                   </div>
                   <div class="summary-item">
                     <span class="label">Précipitations:</span>
                     <span class="value text-primary">
-                      {{ getTotalPrecipitation() | number:'1.0-0' }}%
+                      {{ getTotalPrecipitation() | number : "1.0-0" }}%
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-            
+
             <div class="col-md-4">
               <div class="card">
                 <div class="card-header">
@@ -259,7 +288,7 @@
                   <div class="summary-item">
                     <span class="label">UV max:</span>
                     <span [class]="getUvClass(getMaxUvi())" class="value">
-                      {{ getMaxUvi() | number:'1.0-1' }}
+                      {{ getMaxUvi() | number : "1.0-1" }}
                     </span>
                   </div>
                   <div class="summary-item">
@@ -286,7 +315,9 @@
         <div class="text-center py-5">
           <i class="bi bi-calendar-x display-1 text-muted"></i>
           <h3 class="mt-3">Aucune prévision disponible</h3>
-          <p class="text-muted">Impossible de charger les prévisions météo pour cette ville.</p>
+          <p class="text-muted">
+            Impossible de charger les prévisions météo pour cette ville.
+          </p>
           <button class="btn btn-primary" (click)="navigateToHome()">
             <i class="bi bi-house"></i> Retour à l'accueil
           </button>
